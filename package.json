@@ -14,8 +14,7 @@
     "db:nix": "prisma db push && prisma db seed",
     "db:build": "npx prisma db push && npx prisma db seed",
     "sb-stop": "supabase stop --backup",
-    "sb-restart": "supabase stop --backup && supabase start",
-    "sb-reset": "supabase db reset && yarn sb-restart && prisma db push"
+    "sb-restart": "supabase stop --backup && supabase start"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
