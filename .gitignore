@@ -14,3 +14,5 @@ vite.config.ts.timestamp-*
 
 .yarn
 yarn.lock
+flake.nix
+flake.lock
