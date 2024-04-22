@@ -8,12 +8,11 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "prisma:inline": "cp ./node_modules/.prisma/client/*.js ./node_modules/@prisma/client",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "db": "npx prisma db push && npx prisma db seed",
     "db:nix": "prisma db push && prisma db seed",
-    "db:build": "npx prisma db push && npx prisma db seed && npm run prisma:inline",
+    "db:build": "npx prisma db push && npx prisma db seed",
     "sb-stop": "supabase stop --backup",
     "sb-restart": "supabase stop --backup && supabase start"
   },
