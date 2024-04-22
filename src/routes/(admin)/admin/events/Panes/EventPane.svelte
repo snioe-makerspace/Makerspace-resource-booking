@@ -170,58 +170,57 @@
         bind:errors={$errors.image}
         bind:image={$form.image}
       />
-			<label class="CrispLabel" for="previewDesc">
-				<span data-mandatory style="color: inherit;"> Preview Description </span>
-				<TipTap name="previewDesc" bind:content={$form.previewDesc} />
-				{#if $errors.previewDesc}
-					<p class="CrispMessage w-100" data-type="error">
-						{$errors.previewDesc}
-					</p>
-				{/if}
-			</label>
-			{#if $errors.previewDesc}
-				<p class="CrispMessage w-100" data-type="error">
-					{$errors.previewDesc}
-				</p>
-			{/if}
+      <label class="CrispLabel" for="previewDesc">
+        <span data-mandatory style="color: inherit;"> Preview Description </span>
+        <TipTap name="previewDesc" bind:content={$form.previewDesc} />
+        {#if $errors.previewDesc}
+          <p class="CrispMessage w-100" data-type="error">
+            {$errors.previewDesc}
+          </p>
+        {/if}
+      </label>
+      {#if $errors.previewDesc}
+        <p class="CrispMessage w-100" data-type="error">
+          {$errors.previewDesc}
+        </p>
+      {/if}
 
-			<label class="CrispLabel" for="previewDesc">
-				<span data-mandatory style="color: inherit;"> Description </span>
-				<TipTap name="previewDesc" bind:content={$form.desc} />
-				{#if $errors.desc}
-					<p class="CrispMessage w-100" data-type="error">
-						{$errors.desc}
-					</p>
-				{/if}
-			</label>
-			{#if $errors.desc}
-				<p class="CrispMessage w-100" data-type="error">
-					{$errors.desc}
-				</p>
-			{/if}
-		</form>
-	</svelte:fragment>
-	<div class="Row--j-end gap-10" slot="footer">
-		<button
-			type="button"
-			class="CrispButton"
-			data-type="danger"
-			on:click={() => {
-				modal = false;
-				resetForm(form);
-			}}
-		>
-			Cancel
-		</button>
-		<button
-			form={$formId}
-			class="CrispButton"
-			data-type="dark"
-			type="submit"
-			disabled={$form?.id !== undefined && $tainted === undefined}
-		>
-			{$form?.id !== undefined ? 'Update' : 'Submit'}
-		</button>
-	</div>
-
+      <label class="CrispLabel" for="previewDesc">
+        <span data-mandatory style="color: inherit;"> Description </span>
+        <TipTap name="previewDesc" bind:content={$form.desc} />
+        {#if $errors.desc}
+          <p class="CrispMessage w-100" data-type="error">
+            {$errors.desc}
+          </p>
+        {/if}
+      </label>
+      {#if $errors.desc}
+        <p class="CrispMessage w-100" data-type="error">
+          {$errors.desc}
+        </p>
+      {/if}
+    </form>
+  </svelte:fragment>
+  <div class="Row--j-end gap-10" slot="footer">
+    <button
+      type="button"
+      class="CrispButton"
+      data-type="danger"
+      on:click={() => {
+        modal = false;
+        resetForm(form);
+      }}
+    >
+      Cancel
+    </button>
+    <button
+      form={$formId}
+      class="CrispButton"
+      data-type="dark"
+      type="submit"
+      disabled={$form?.id !== undefined && $tainted === undefined}
+    >
+      {$form?.id !== undefined ? 'Update' : 'Submit'}
+    </button>
+  </div>
 </Pane>

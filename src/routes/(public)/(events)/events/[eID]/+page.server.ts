@@ -4,13 +4,13 @@ import type { PageServerLoad } from './$types';
 
 // @ts-ignore
 export const load: PageServerLoad = async ({ params }) => {
-	const event = await getEventById(params.eID);
+  const event = await getEventById(params.eID);
 
-	if (!event) {
-		throw redirect(307, '/events');
-	}
+  if (!event) {
+    throw redirect(307, '/events');
+  }
 
-	return {
-		event
-	};
+  return {
+    event
+  };
 };

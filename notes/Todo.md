@@ -1,9 +1,10 @@
 ## Short run ToDo
+
 - [ ] Add trigger to delete manual from bucket when deleted from database
 - [ ] replace [eId] in equipment page with equipmentId
 - [ ] replace [eId] in event page with eventId
 - [ ] New tutorial slots
-  - [ ] Each tutorial will have 
+  - [ ] Each tutorial will have
     - Name
     - Description
     - From time
@@ -13,7 +14,8 @@
     - text field for mentors
 
 ## Long run ToDo
-- [ ] Convert isDeleted to SecondaryStatus enum with values: deleted, disabled, enabled with default value enabled so that we can delete the ones with no dependents  
+
+- [ ] Convert isDeleted to SecondaryStatus enum with values: deleted, disabled, enabled with default value enabled so that we can delete the ones with no dependents
 - [ ] refactor image upload with conditions to a function to supabaseUtils file. It is used in multiple files(Search "const { data, error } = await supabase.storage")
 
 ## Completed Short run ToDo
