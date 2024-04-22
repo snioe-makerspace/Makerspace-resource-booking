@@ -1,2 +1,2 @@
 compatibility_flags = [ "nodejs_compat" ]
-node_compat = false
+node_compat = true
