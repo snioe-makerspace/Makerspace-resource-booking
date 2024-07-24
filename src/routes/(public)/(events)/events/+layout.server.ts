@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 // @ts-ignore
 export const load: LayoutServerLoad = async () => {
-	return {
-		allEvents: await getAllEventsPreview()
-	};
+  return {
+    allEvents: await getAllEventsPreview()
+  };
 };

@@ -61,7 +61,8 @@ export const actions: Actions = {
         type: newProfileData.type,
         typeData: newProfileData.typeData
       } as UserProfileSchema,
-      zod(UserProfileZodSchema));
+      zod(UserProfileZodSchema)
+    );
 
     return {
       userProfileForm,

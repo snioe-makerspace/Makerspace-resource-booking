@@ -2,18 +2,18 @@ import { getAllContent } from '$db/CMS.db';
 import { checkRevalidateProfile, removeRevalidateProfile } from '$db/User.db';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ locals }) => {
-  if (locals.session) {
-    const isRevalidateUser = await checkRevalidateProfile(locals.session.user.id);
+export const load: LayoutServerLoad = async ({ locals: { getSession, session, supabase } }) => {
+  if (session) {
+    const isRevalidateUser = await checkRevalidateProfile(session.user.id);
     if (isRevalidateUser) {
-      locals.supabase.auth.refreshSession();
-      locals.session = await locals.getSession();
-      removeRevalidateProfile(locals.session?.user.id!);
+      supabase.auth.refreshSession();
+      session = await getSession();
+      removeRevalidateProfile(session?.user.id!);
     }
   }
 
   return {
-    session: locals.session,
+    session: session,
     content: await getAllContent()
   };
 };

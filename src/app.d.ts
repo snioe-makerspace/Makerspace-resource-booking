@@ -14,16 +14,30 @@ declare global {
   namespace App {
     // interface Error {}
     interface Locals {
-      supabase: SupabaseClient<Database>;
+      supabase: SupabaseClient;
       session: SupabaseSession | null;
       getSession(): Promise<SupabaseSession | null>;
+      safeGetSession(): Promise<{ session: Session | null; user: User | null }>;
     }
     interface PageData {
-      supabase: SupabaseClient<Database>;
+      supabase: SupabaseClient;
       session: SupabaseSession | null;
+      user: User | null;
     }
     // interface PageState {}
     // interface Platform {}
+  }
+
+  // Doc: Types for view transitions: https://svelte.dev/blog/view-transitions
+  interface ViewTransition {
+    updateCallbackDone: Promise<void>;
+    ready: Promise<void>;
+    finished: Promise<void>;
+    skipTransition: () => void;
+  }
+
+  interface Document {
+    startViewTransition(updateCallback: () => Promise<void>): ViewTransition;
   }
 
   namespace svelteHTML {
@@ -32,16 +46,5 @@ declare global {
     }
   }
 }
-
-// declare module '@supabase/supabase-js' {
-// 	interface User {
-// 		app_metadata: UserAppMetadata & {
-// 			custom_claim: {
-// 				role: string;
-// 				isnew: boolean;
-// 			};
-// 		};
-// 	}
-// }
 
 export {};

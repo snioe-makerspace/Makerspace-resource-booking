@@ -19,15 +19,28 @@ const createSupabaseClient: Handle = async ({ event, resolve }) => {
     }
   });
 
+  event.locals.safeGetSession = async () => {
+    const {
+      data: { user },
+      error
+    } = await event.locals.supabase.auth.getUser();
+    if (error) {
+      return { session: null, user: null };
+    }
+
+    const {
+      data: { session }
+    } = await event.locals.supabase.auth.getSession();
+    return { session, user };
+  };
+
   /**
    * a little helper that is written for convenience so that instead
    * of calling `const { data: { session } } = await supabase.auth.getSession()`
    * you just call this `await getSession()`
    */
   event.locals.getSession = async () => {
-    const {
-      data: { session }
-    } = await event.locals.supabase.auth.getSession();
+    const { session } = await event.locals.safeGetSession();
     return session;
   };
 

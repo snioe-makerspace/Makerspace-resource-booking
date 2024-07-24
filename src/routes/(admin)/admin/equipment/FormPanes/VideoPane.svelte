@@ -25,7 +25,7 @@
     },
     onResult(event) {
       if (event.result.status === 200) {
-        addToast({ message: 'Videos updated', type: 'success'  });
+        addToast({ message: 'Videos updated', type: 'success' });
         modal = false;
         addModeItem = null;
         operations = {

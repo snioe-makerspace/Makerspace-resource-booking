@@ -2,13 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_DIRECT_URL_POSTGRES")
-  // directUrl = env("DATABASE_DIRECT_URL_POSTGRES")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Profile {
@@ -20,10 +20,10 @@ model Profile {
   email  String
 
   // Doc: Needed in on_profile_role_updated trigger
-  role          UserRole      @default(user)
+  role          UserRole  @default(user)
   // Doc: Needed in on_profile_isnew_updated trigger
   isNew         Boolean   @default(true) @map("isnew")
-  isBlacklisted Boolean  @default(false) @map("is_blacklisted")
+  isBlacklisted Boolean   @default(false) @map("is_blacklisted")
   cart          Cart?
   cartId        String?
   bookings      Booking[]
@@ -35,7 +35,7 @@ model Profile {
   // faculty: { department: "CSE", branch: "Computer Science", designation: "Assistant Professor", facultyId: "1234"}
   // staff: { department: "CSE", branch: "Computer Science", designation: "Lab Assistant", staffId: "1234"}
   RevalidateProfile RevalidateProfile?
-  events   Event[]
+  events            Event[]
 
   @@map("profile")
 }

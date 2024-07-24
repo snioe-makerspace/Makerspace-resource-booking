@@ -6,6 +6,7 @@
   import BlurredSpinner from '$components/BlurredSpinner.svelte';
   import { ToastStore } from '$store/ToastStore';
   import Toast from '$components/Toast.svelte';
+  import { browser } from '$app/environment';
   export let data;
 
   // Supabase
@@ -25,6 +26,15 @@
     return () => subscription.unsubscribe();
   });
 
+  // Doc: set document overflow to hidden on navigation, when the page is loading
+  if (browser) {
+    if ($navigating) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
   // This layout is the root. All routes will inherit this layout.;
   // Add to this page only if you want it to be applied for all routes.
   // All folders are named according to: https://kit.svelte.dev/docs/advanced-routing#advanced-layouts
@@ -41,7 +51,7 @@
 {#if $ToastStore}
   <ul class="ToastList">
     {#each $ToastStore as toast (toast.id)}
-    <Toast {...toast} />
+      <Toast {...toast} />
     {/each}
   </ul>
 {/if}

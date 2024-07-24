@@ -70,7 +70,7 @@
                 <span class="AdminOrder__status--{booking.paymentStatus.toLowerCase()}">
                   {booking.paymentStatus}
                 </span>
-            </td>
+              </td>
               <td>
                 <span class="Row--j-end w-100">
                   <button

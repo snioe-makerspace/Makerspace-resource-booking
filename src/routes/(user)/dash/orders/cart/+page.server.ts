@@ -9,12 +9,12 @@ import { fail } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ locals }) => {
   const bookingForm = await superValidate(
     {
-      userId: locals.session!.user.id,
+      userId: locals.session!.user.id
     },
     zod(BookingZSchema),
     { errors: false }
   );
-  const cartDeleteForm = await superValidate(zod(CartDeleteZSchema))
+  const cartDeleteForm = await superValidate(zod(CartDeleteZSchema));
 
   return {
     bookingForm,
@@ -30,25 +30,25 @@ export const actions: Actions = {
       return fail(400, { bookingForm });
     }
 
-    const booking = await makeBooking(bookingForm.data)
-    if ("error" in booking) {
-      return fail(500, { bookingForm, error: booking.error })
+    const booking = await makeBooking(bookingForm.data);
+    if ('error' in booking) {
+      return fail(500, { bookingForm, error: booking.error });
     }
 
     return {
       bookingForm,
       booking
-    }
+    };
   },
   delete: async ({ request }) => {
-    const cartDeleteForm = await superValidate(request, zod(CartDeleteZSchema))
+    const cartDeleteForm = await superValidate(request, zod(CartDeleteZSchema));
     if (!cartDeleteForm.valid) {
-      return fail(400, { cartDeleteForm })
+      return fail(400, { cartDeleteForm });
     }
 
     return {
       cartDeleteForm,
       response: await deleteCartItem(cartDeleteForm.data.ids)
-    }
+    };
   }
-}
+};

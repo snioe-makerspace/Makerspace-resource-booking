@@ -23,14 +23,14 @@ export const actions: Actions = {
   upsertEvent: async ({ request, locals: { supabase, session } }) => {
     const upsertEventForm = await superValidate(request, zod(EventZodSchema));
     const imageFile = upsertEventForm.data.image as File;
-    
+
     if (!upsertEventForm.valid) {
       return fail(400, withFiles({ upsertEventForm }));
     }
-    
+
     if (typeof imageFile !== 'string') {
       if (upsertEventForm.data.id) {
-        console.log(imageFile)
+        console.log(imageFile);
         const { data, error } = await supabase.storage
           .from(SupabaseEnum.EVENT)
           .update(imageFile.name, imageFile, {

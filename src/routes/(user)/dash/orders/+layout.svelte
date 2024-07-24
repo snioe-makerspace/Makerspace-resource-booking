@@ -51,7 +51,9 @@
         color: rgb(112, 112, 112);
         transition: background-color 0.2s;
         border-bottom: 2px solid transparent;
-        transition: color 0.2s, border-bottom 0.2s;
+        transition:
+          color 0.2s,
+          border-bottom 0.2s;
 
         &.active {
           font-weight: 500;
