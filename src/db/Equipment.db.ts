@@ -107,7 +107,6 @@ export async function upsertEquipment(equipment: Equipment) {
       model: equipment.model,
       image: equipment.image,
       description: equipment.description,
-      specifications: equipment.specifications,
       eCategoriesId: equipment.eCategoriesId
     },
     create: {
@@ -115,7 +114,6 @@ export async function upsertEquipment(equipment: Equipment) {
       model: equipment.model,
       image: equipment.image,
       description: equipment.description,
-      specifications: equipment.specifications,
       eCategoriesId: equipment.eCategoriesId
     }
   });
