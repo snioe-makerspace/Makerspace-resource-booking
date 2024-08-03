@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -12,30 +9,20 @@ datasource db {
 }
 
 model Profile {
-  // Doc: When new attributes are added, make sure to update the triggers
-  // /prisma/seed.ts > main() > onNewUser
-  id     String @id @db.Uuid
-  name   String
-  mobile String
-  email  String
-
-  // Doc: Needed in on_profile_role_updated trigger
-  role          UserRole  @default(user)
-  // Doc: Needed in on_profile_isnew_updated trigger
-  isNew         Boolean   @default(true) @map("isnew")
-  isBlacklisted Boolean   @default(false) @map("is_blacklisted")
-  cart          Cart?
-  cartId        String?
-  bookings      Booking[]
-
+  id                String             @id @db.Uuid
+  name              String
+  mobile            String
+  email             String
+  role              UserRole           @default(user)
+  isNew             Boolean            @default(true) @map("isnew")
+  isBlacklisted     Boolean            @default(false) @map("is_blacklisted")
+  cartId            String?
   type              ProfileType        @default(STUDENT)
   typeData          Json?              @default("{}") @map("type_data") @db.Json
-  // Doc: This will have the data for each type
-  // student: { yearOfStudy: 1, branch: "CSE", department: "Computer Science", studentId: "1234", clubs: ["club1", "club2"], researchArea: "AI"}
-  // faculty: { department: "CSE", branch: "Computer Science", designation: "Assistant Professor", facultyId: "1234"}
-  // staff: { department: "CSE", branch: "Computer Science", designation: "Lab Assistant", staffId: "1234"}
-  RevalidateProfile RevalidateProfile?
+  bookings          Booking[]
+  cart              Cart?
   events            Event[]
+  RevalidateProfile RevalidateProfile?
 
   @@map("profile")
 }
@@ -43,7 +30,7 @@ model Profile {
 model RevalidateProfile {
   id     String  @id @default(nanoid(7))
   userId String  @unique @db.Uuid
-  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Equipment {
@@ -52,13 +39,13 @@ model Equipment {
   model           String
   description     String           @db.VarChar(2500)
   image           String
-  instances       EInstance[]
   eCategoriesId   String
+  secondaryStatus ESecondaryStatus @default(ACTIVE) @map("secondary_status")
+  specifications  String           @db.VarChar(2500)
+  instances       EInstance[]
   category        ECategories      @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
-  // isDeleted       Boolean           @default(false) @map("is_deleted")
   manuals         Manual[]
   videos          Video[]
-  secondaryStatus ESecondaryStatus @default(ACTIVE) @map("secondary_status")
 }
 
 model Manual {
@@ -66,14 +53,14 @@ model Manual {
   name        String
   pdf         String
   equipmentId String
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 }
 
 model Video {
   id          String    @id @unique @default(nanoid(7))
   video       String
   equipmentId String
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 }
 
 model EInstance {
@@ -84,31 +71,29 @@ model EInstance {
   cost            Float
   billingType     EBillingType     @default(PER_SLOT) @map("billing_type")
   equipmentId     String
-  CartItem        CartItem[]
-  BookingItem     BookingItem[]
   availability    Json             @default("{}") @db.Json
-  equipment       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   secondaryStatus ESecondaryStatus @default(ACTIVE) @map("secondary_status")
+  BookingItem     BookingItem[]
+  CartItem        CartItem[]
+  equipment       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 }
 
 model Cart {
   id     String     @id @unique @default(nanoid(7))
   userId String     @unique @map("user_id") @db.Uuid
+  user   Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
   items  CartItem[]
-
-  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model CartItem {
-  id         String   @id @unique @default(nanoid(12))
+  id         String    @id @unique @default(nanoid(12))
   instanceId String
   start      DateTime
   end        DateTime
   cartId     String
-  createdAt  DateTime @default(now()) @map("created_at")
-
-  cart     Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  instance EInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  cart       Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  instance   EInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
 }
 
 model Booking {
@@ -118,13 +103,13 @@ model Booking {
   description   String
   deadline      DateTime
   cost          Float
-  items         BookingItem[]
   paymentId     String?
   status        BookingStatus @default(PENDING)
   createdAt     DateTime      @default(now()) @map("created_at")
   adminNotes    String?       @map("admin_notes") @db.VarChar(255)
-  user          Profile       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   paymentStatus PaymentStatus @default(PENDING) @map("payment_status")
+  user          Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         BookingItem[]
 }
 
 model BookingItem {
@@ -133,14 +118,13 @@ model BookingItem {
   start      DateTime
   end        DateTime
   bookingId  String
-  booking    Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  instance   EInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  booking    Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  instance   EInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
 }
 
 model ECategories {
-  id   String @id @unique @default(nanoid(7))
-  name String
-
+  id        String      @id @unique @default(nanoid(7))
+  name      String
   equipment Equipment[]
 }
 
@@ -154,12 +138,10 @@ model RepoElectronics {
 }
 
 model RepoMaterials {
-  id         String @id @unique @default(nanoid(7))
-  name       String
-  quantity   Int
-  dimensions Json   @db.Json
-  // { type: DType, value: number, unit: DUnit }[]
-
+  id          String  @id @unique @default(nanoid(7))
+  name        String
+  quantity    Int
+  dimensions  Json    @db.Json
   description String? @db.VarChar(255)
 }
 
@@ -171,7 +153,35 @@ model ContentManagement {
   updatedAt DateTime @default(now()) @map("updated_at")
 }
 
-// Enums
+model Event {
+  id          String      @id @unique @default(nanoid(7))
+  title       String
+  previewDesc String
+  desc        String
+  image       String
+  startTime   DateTime    @map("start_time")
+  endTime     DateTime    @map("end_time")
+  venue       String
+  venueLink   String?     @map("venue_link")
+  status      EventStatus @default(UPCOMING)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @map("updated_at")
+  type        EventType   @default(GENERAL)
+  userId      String      @db.Uuid
+  user        Profile     @relation(fields: [userId], references: [id])
+}
+
+model Tutorials {
+  id          String   @id @unique @default(nanoid(7))
+  title       String
+  previewDesc String
+  desc        String
+  startTime   DateTime @map("start_time")
+  endTime     DateTime @map("end_time")
+  date        DateTime
+  mentors     String
+}
+
 enum EStatus {
   available
   inUse       @map("in_use")
@@ -215,41 +225,8 @@ enum EBillingType {
   PER_SESSION
 }
 
-model Event {
-  id          String      @id @unique @default(nanoid(7))
-  title       String
-  previewDesc String
-  desc        String
-  image       String
-  startTime   DateTime    @map("start_time")
-  endTime     DateTime    @map("end_time")
-  venue       String
-  venueLink   String?     @map("venue_link")
-  status      EventStatus @default(UPCOMING)
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @default(now()) @map("updated_at")
-  type        EventType   @default(GENERAL)
-
-  userId String  @db.Uuid
-  user   Profile @relation(fields: [userId], references: [id])
-}
-
-model Tutorials {
-  id          String   @id @unique @default(nanoid(7))
-  title       String
-  previewDesc String
-  desc        String
-  startTime   DateTime @map("start_time")
-  endTime     DateTime @map("end_time")
-  date        DateTime
-  // equipments Equipment[]
-  mentors     String
-}
-
 enum EventType {
   GENERAL
-  // WORKSHOP
-  // TUTORIALS
 }
 
 enum EventStatus {
