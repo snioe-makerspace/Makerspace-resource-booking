@@ -4,7 +4,7 @@
   import type { getUserBookings } from '$db/Cart.db';
   import type { BookingCancelSchema, BookingUpdateSchema } from '$lib/schemas';
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
-  import { BookingStatus, PaymentStatus } from '@prisma/client';
+  import { BookingStatus } from '@prisma/client';
   import { bookingCost } from '$utils/BookingCost';
 
   export let { modal, booking, formStore, updateFormStore } = $$props as {
@@ -31,28 +31,6 @@
       }
     }
   });
-
-  const { form: updateForm, enhance: updateEnhance } = superForm(updateFormStore, {
-    id: 'updateForm',
-    dataType: 'json',
-    onSubmit() {
-      updateForm.set({
-        ...$updateForm,
-        bookingId: booking.id,
-        paymentStatus: PaymentStatus.VERIFICATION
-      });
-    },
-    onResult(event) {
-      modal = false;
-      if (event.result.status === 400) {
-        addToast({ message: 'Booking could not be updated', type: 'danger' });
-      } else if (event.result.status === 200) {
-        addToast({ message: 'Booking updated successfully', type: 'success' });
-      }
-    }
-  });
-
-  const defaultPaymentId = booking.paymentId || '';
 
   // @ts-ignore
   $: bookingItemsCost = bookingCost(booking.items);
@@ -201,9 +179,9 @@
           name="paymentId"
           class="CrispInput"
           type="text"
-          disabled={defaultPaymentId !== ''}
-          readonly={defaultPaymentId !== ''}
-          bind:value={$updateForm.paymentId}
+          disabled
+          readonly
+          bind:value={booking.paymentId}
         />
       </label>
       {#if booking.status !== BookingStatus.CANCELLED && booking.adminNotes}
@@ -230,12 +208,7 @@
           use:deleteEnhance
           id="cancelForm"
         >
-          <button type="submit" class="CrispButton" data-type="danger"> Cancel </button>
-        </form>
-      {/if}
-      {#if booking.paymentStatus === 'PENDING'}
-        <form action="/dash/orders/bookings?/pay" method="POST" use:updateEnhance id="payForm">
-          <button type="submit" class="CrispButton" data-type="dark"> Pay </button>
+          <button type="submit" class="CrispButton" data-type="danger"> Cancel Booking </button>
         </form>
       {/if}
     </div>

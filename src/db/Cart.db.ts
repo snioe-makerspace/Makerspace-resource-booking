@@ -153,7 +153,8 @@ export async function makeBooking(data: BookingSchema): Promise<
               start: item.start,
               instanceId: item.instanceId
             }))
-          }
+          },
+          paymentId: data.paymentId
         }
       })
       .then(async (res) => {

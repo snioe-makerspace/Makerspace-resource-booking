@@ -19,6 +19,7 @@
     dataType: 'json',
     taintedMessage: null,
     onSubmit() {
+      console.log($form);
       form.set({
         ...$form,
         cartId: instances[0].cartId,
@@ -37,7 +38,8 @@
           deadline: undefined,
           instances: [],
           cartId: '',
-          adminNotes: ''
+          adminNotes: '',
+          paymentId: ''
         });
         instances = [];
       } else if (event.result.status === 400) {
@@ -73,7 +75,8 @@
       // @ts-ignore
       deadline: undefined,
       instances: [],
-      adminNotes: ''
+      adminNotes: '',
+      paymentId: ''
     };
   }}
 >
@@ -150,6 +153,25 @@
           }).format(bookingCost(instances))}
         />
       </label>
+      {#if bookingCost(instances) > 0}
+        <img src="/assets/images/payment-qr-code.png" alt="Payment QR Code" style="width: 10rem" />
+      {/if}
+
+      <label for="paymentId" class="CrispLabel">
+        <span style="color: inherit;" data-mandatory> Payment ID </span>
+        <input
+          id="paymentId"
+          type="text"
+          name="paymentId"
+          class="CrispInput"
+          bind:value={$form.paymentId}
+          {...$constraints.paymentId}
+          aria-invalid={$errors.paymentId ? 'true' : undefined}
+        />
+        {#if $errors.paymentId}
+          <p class="CrispMessage w-100" data-type="error">{$errors.paymentId}</p>
+        {/if}
+      </label>
 
       <label for="instance" class="CrispLabel" style="overflow-x: auto; padding-bottom: 10px">
         <span style="color: inherit;"> Instances </span>
@@ -225,7 +247,8 @@
       disabled={$form.mentor === '' ||
         $form.description === '' ||
         $form.deadline === undefined ||
-        $form.instances.length === 0}
+        $form.instances.length === 0 ||
+        ($form.paymentId === undefined && bookingCost(instances) > 0)}
     >
       Book
     </button>
