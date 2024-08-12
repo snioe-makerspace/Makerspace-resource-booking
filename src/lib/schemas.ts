@@ -119,6 +119,7 @@ export const EZodSchema = z.object({
     .refine((f) => f.size < 100_000, 'Max 100 kB upload size.')
     .or(z.string()),
   description: z.string().optional().default(''),
+  specifications: z.string().optional().default(''),
   eCategoriesId: z.string().min(7, { message: 'Category is required' }),
   // isDeleted: z.boolean().optional().or(z.literal(false))
   secondaryStatus: z.nativeEnum(ESecondaryStatus)

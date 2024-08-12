@@ -47,6 +47,7 @@
 
   <div class="Equipment__content">
     {#each data.allEquipment.filter((item) => {
+      if (item.secondaryStatus === ESecondaryStatus.DISABLED) return false;
       if (categoryFilter === '') return item;
       return item.eCategoriesId === categoryFilter;
     }) as item (item.id)}
@@ -119,6 +120,7 @@
         border-radius: 7px;
         object-fit: contain;
         @include box(100%, auto);
+        aspect-ratio: 1/1;
       }
 
       & > h2 {

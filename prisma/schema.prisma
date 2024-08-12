@@ -21,6 +21,7 @@ model Profile {
   typeData          Json?              @default("{}") @map("type_data") @db.Json
   bookings          Booking[]
   cart              Cart?
+  training          ETraining[]
   events            Event[]
   RevalidateProfile RevalidateProfile?
 
@@ -46,6 +47,7 @@ model Equipment {
   category        ECategories      @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
   manuals         Manual[]
   videos          Video[]
+  trainings       ETraining[]
 }
 
 model Manual {
@@ -76,6 +78,15 @@ model EInstance {
   BookingItem     BookingItem[]
   CartItem        CartItem[]
   equipment       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+}
+
+model ETraining {
+  id          String    @id @unique @default(nanoid(7))
+  userId      String    @map("user_id") @db.Uuid
+  user        Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  date        DateTime
 }
 
 model Cart {
