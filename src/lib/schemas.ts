@@ -106,6 +106,22 @@ export const EItemZodSchema = z.object({
 
 export type EItemSchema = z.infer<typeof EItemZodSchema>;
 
+export const ETrainingSessionZSchema = z.object({
+  id: z.string(),
+  equipmentId: z.string(),
+  start: z.string(), // will be string of date object
+  end: z.string() // will be string of date object
+});
+
+export type ETrainingSessionSchema = z.infer<typeof ETrainingSessionZSchema>;
+
+export const ETrainingCRUDSchema = z.object({
+  add: z.array(ETrainingSessionZSchema),
+  delete: z.array(z.string())
+});
+
+export type ETrainingCRUDSchema = z.infer<typeof ETrainingCRUDSchema>;
+
 export const EZodSchema = z.object({
   id: z.string().optional().or(z.literal('')),
   name: z.string().min(2),
@@ -122,7 +138,8 @@ export const EZodSchema = z.object({
   specifications: z.string().optional().default(''),
   eCategoriesId: z.string().min(7, { message: 'Category is required' }),
   // isDeleted: z.boolean().optional().or(z.literal(false))
-  secondaryStatus: z.nativeEnum(ESecondaryStatus)
+  secondaryStatus: z.nativeEnum(ESecondaryStatus),
+  trainingSession: z.array(ETrainingSessionZSchema).optional()
 });
 
 export type ESchema = z.infer<typeof EZodSchema>;

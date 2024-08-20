@@ -10,6 +10,7 @@
   import { EBillingType, ESecondaryStatus, type Manual, type Video } from '@prisma/client';
   import VideoPane from './FormPanes/VideoPane.svelte';
   import InstancePane from './FormPanes/InstancePane.svelte';
+  import TrainingSessionPane from './FormPanes/TrainingSessionPane.svelte';
 
   export let data: PageData;
 
@@ -20,7 +21,8 @@
     categoryForm,
     manualForm,
     videoForm,
-    upsertInstanceForm
+    upsertInstanceForm,
+    trainingSessionForm
   } = data);
   $: equipmentModal = false;
   $: manualModal = false;
@@ -29,6 +31,7 @@
   $: editItem = {} as (ESchema & { manuals: Manual[]; videos: Video[] }) | null;
 
   $: eCategoriesModal = false;
+  $: trainingSessionModal = false;
   $: editMenuId = '';
 
   const resetForm = (form: Writable<ESchema>) => {
@@ -73,6 +76,11 @@ is properly set.
 <ManualPane bind:modal={manualModal} bind:formStore={manualForm} bind:currentEquipment={editItem} />
 <VideoPane bind:modal={videoModal} bind:formStore={videoForm} bind:currentEquipment={editItem} />
 <CategoryPane bind:formStore={categoryForm} bind:eCategories bind:modal={eCategoriesModal} />
+<TrainingSessionPane
+  bind:formStore={trainingSessionForm}
+  bind:modal={trainingSessionModal}
+  bind:currentEquipment={editItem}
+/>
 
 <main class="AdminEquipment">
   <header>
@@ -124,7 +132,10 @@ is properly set.
             <!-- Ref: https://svelte.dev/docs/special-tags#const -->
             {@const isDeleted = item.secondaryStatus === ESecondaryStatus.DELETED}
             {@const isDisabled = item.secondaryStatus === ESecondaryStatus.DISABLED}
-            <tr class:disabled={isDeleted || isDisabled} title="Equipment is disabled">
+            <tr
+              class:disabled={isDeleted || isDisabled}
+              title={isDisabled ? 'Item is Disabled' : ''}
+            >
               <td> {item.name} </td>
               <td> {item.model} </td>
               <td> {item.category.name} </td>
@@ -155,6 +166,7 @@ is properly set.
                     class="AdminEquipment__content--box CrispMenu__content"
                     data-align="top"
                     data-direction="left"
+                    style="--crp-menu-width: 200px"
                   >
                     <button
                       class="CrispButton"
@@ -175,6 +187,20 @@ is properly set.
                       }}
                     >
                       Edit
+                    </button>
+                    <button
+                      class="CrispButton"
+                      data-border="false"
+                      class:active={editMenuId === item.id}
+                      on:click={() => {
+                        editItem = {
+                          ...item
+                        };
+                        trainingSessionModal = true;
+                        editMenuId = '';
+                      }}
+                    >
+                      Sessions
                     </button>
                     <button
                       class="CrispButton"
@@ -214,7 +240,7 @@ is properly set.
                       use:enhance
                       class="w-100"
                       method="POST"
-                      action="/admin/equipment?/{isDeleted ? 'enable' : 'disable'}"
+                      action="/admin/equipment?/{isDisabled ? 'enable' : 'disable'}"
                       on:submit={() => {
                         return confirm(
                           `Are you sure you want to ${

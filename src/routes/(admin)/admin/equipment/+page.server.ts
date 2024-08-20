@@ -3,6 +3,8 @@ import {
   ECategoryCRUDZSchema,
   EItemZodSchema,
   EManualCRUDZSchema,
+  ETrainingCRUDSchema,
+  ETrainingSessionZSchema,
   EVideoCRUDZSchema,
   EZodSchema
 } from '$lib/schemas';
@@ -23,7 +25,9 @@ import {
   deleteVideos,
   deleteEquipment,
   upsertInstance,
-  upsertEquipment
+  upsertEquipment,
+  addMultipleSessions,
+  deleteMultipleSessions
 } from '$db/Equipment.db';
 import { ESecondaryStatus } from '@prisma/client';
 
@@ -37,6 +41,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     allEquipment: await getAllEquipment(),
     eCategories: await getECategories(),
     categoryForm: await superValidate(zod(ECategoryCRUDZSchema)),
+    trainingSessionForm: await superValidate(zod(ETrainingSessionZSchema)),
     manualForm: await superValidate(zod(EManualCRUDZSchema)),
     videoForm: await superValidate(zod(EVideoCRUDZSchema)),
     upsertInstanceForm: await superValidate(zod(EItemZodSchema))
@@ -221,6 +226,26 @@ export const actions: Actions = {
       response: {
         add: videoForm.data.add.length > 0 ? await addMultipleVideos(videoForm.data.add) : [],
         delete: videoForm.data.delete.length > 0 ? await deleteVideos(videoForm.data.delete) : []
+      }
+    };
+  },
+  trainingSessionCRUD: async ({ request }) => {
+    const trainingSessionForm = await superValidate(request, zod(ETrainingCRUDSchema));
+    if (!trainingSessionForm.valid) {
+      return fail(400, { trainingSessionForm });
+    }
+
+    return {
+      form: trainingSessionForm,
+      response: {
+        add:
+          trainingSessionForm.data.add.length > 0
+            ? await addMultipleSessions(trainingSessionForm.data.add)
+            : [],
+        delete:
+          trainingSessionForm.data.delete.length > 0
+            ? await deleteMultipleSessions(trainingSessionForm.data.delete)
+            : []
       }
     };
   }

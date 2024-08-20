@@ -48,6 +48,7 @@
     bind:formStore={data.cartItemForm}
     bind:currentEquipment={data.equipment}
     bind:instanceId={selectedInstance['id']}
+    bind:trained={data.trainedUsers}
   />
 {/if}
 

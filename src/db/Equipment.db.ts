@@ -46,6 +46,7 @@ export async function getAllEquipment(): Promise<
     videos: Video[];
     category: ECategories;
     instances: EItemSchema[];
+    trainingSession: { id: string; start: Date; end: Date } | null;
   })[]
 > {
   // @ts-ignore
@@ -54,7 +55,8 @@ export async function getAllEquipment(): Promise<
       instances: true,
       category: true,
       manuals: true,
-      videos: true
+      videos: true,
+      trainingSession: true
     }
   });
 }
@@ -81,6 +83,13 @@ export async function getEquipmentById(id: string): Promise<EquipmentById> {
             }
           }
         },
+        trainingSession: {
+          select: {
+            id: true,
+            start: true,
+            end: true
+          }
+        },
         category: true,
         manuals: true,
         videos: true
@@ -95,6 +104,31 @@ export async function getEquipmentById(id: string): Promise<EquipmentById> {
     .catch((err) => ({
       error: err
     }));
+}
+
+export async function getUserTrainingEquipment(equipmentId: string, userId: string) {
+  return await db.eTraining
+    .findFirst({
+      where: {
+        AND: {
+          equipmentId,
+          userId
+        }
+      },
+      select: {
+        userId: true
+      }
+    })
+    .then((res) => {
+      if (res) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch(() => {
+      return false;
+    });
 }
 
 export async function upsertEquipment(equipment: Equipment) {
@@ -232,6 +266,24 @@ export async function addMultipleVideos(videos: Video[]) {
 
 export async function deleteVideos(ids: string[]) {
   return await db.video.deleteMany({
+    where: {
+      id: {
+        in: ids
+      }
+    }
+  });
+}
+
+export async function addMultipleSessions(
+  sessions: { id: string; equipmentId: string; start: string; end: string }[]
+) {
+  return await db.eTrainingSession.createMany({
+    data: sessions
+  });
+}
+
+export async function deleteMultipleSessions(ids: string[]) {
+  return await db.eTrainingSession.deleteMany({
     where: {
       id: {
         in: ids

@@ -8,12 +8,13 @@
   import { SlotStatus, getSelectionSlots, getSlots } from '$utils/AvailabilityRules';
   import { getWeekdayDates, inverseWeekDaysEnum } from '$utils/WeekDayDates';
 
-  export let { modal, formStore, currentEquipment, instanceId, userId } = $$props as {
+  export let { modal, formStore, currentEquipment, instanceId, userId, trained } = $$props as {
     modal: boolean;
     userId: string;
     instanceId: string;
     formStore: SuperValidated<CartItemSchema>;
     currentEquipment: EquipmentById | null;
+    trained: boolean;
   };
 
   $: equipmentId = currentEquipment?.id!;
@@ -74,83 +75,162 @@
     selectedEndTime: `${$form.end}`,
     selectedStartTime: `${$form.start}`
   });
+
+  $: options = {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  };
+
+  console.log(currentEquipment.trainingSession);
 </script>
 
-<Pane className="CartItemPane" bind:open={modal} style="--paneWidth: 375px;">
+<Pane className="CartItemPane" bind:open={modal} style="--paneWidth: 420px;">
   <p slot="header">Availability</p>
+
   <div class="CartItemPane__main" slot="free">
-    <Calendar bind:value={dateSelector} {maxOffset} bind:blackout />
-    <ul class="CartItemPane__legend">
-      <li>
-        <div class="CartItemPane__legend--unavailable" />
-        <p>Not available</p>
-      </li>
-      <li>
-        <div class="CartItemPane__legend--selected" />
-        <p>Selected</p>
-      </li>
-    </ul>
-    <i class="CrispMessage" data-type="info" data-format="box">
-      Note: You can only book for a maximum of {maxOffset} month(s) from today.
-    </i>
-    <hr />
-    <form use:enhance method="POST" id="cartItemForm" action="/equipment/[eId]?/add">
-      <label class="CrispLabel" for="dateSelector">
-        <span data-mandatory style="color: inherit;"> Date </span>
-        <input
-          disabled
-          type="text"
-          id="dateSelector"
-          class="CrispInput"
-          value={dateSelector?.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour12: false
-          }) || 'Select a date'}
-        />
-      </label>
+    {#if $$props.trained}
+      <i class="CrispMessage" data-type="info" data-format="box">
+        You are trained for this equipment.
+      </i>
+    {:else}
+      <i class="CrispMessage" data-type="error" data-format="box">
+        You are not trained for this equipment. Please attend one of the training sessions mentioned
+        below.
+      </i>
+    {/if}
+    {#if $$props.trained}
+      <Calendar bind:value={dateSelector} {maxOffset} bind:blackout />
+      <ul class="CartItemPane__legend">
+        <li>
+          <div class="CartItemPane__legend--unavailable" />
+          <p>Not available</p>
+        </li>
+        <li>
+          <div class="CartItemPane__legend--selected" />
+          <p>Selected</p>
+        </li>
+      </ul>
+      <i class="CrispMessage" data-type="info" data-format="box">
+        Note: You can only book for a maximum of {maxOffset} month(s) from today.
+      </i>
+      <hr />
+      <form use:enhance method="POST" id="cartItemForm" action="/equipment/[eId]?/add">
+        <label class="CrispLabel" for="dateSelector">
+          <span data-mandatory style="color: inherit;"> Date </span>
+          <input
+            disabled
+            type="text"
+            id="dateSelector"
+            class="CrispInput"
+            value={dateSelector?.toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour12: false
+            }) || 'Select a date'}
+          />
+        </label>
 
-      <label class="CrispLabel" for="startTime">
-        <span data-mandatory style="color: inherit;"> Start Time </span>
-        <select class="CrispSelect w-100" bind:value={$form.start}>
-          <option value="" disabled selected> Select a start time </option>
-          {#each Object.keys(selectedSlots.startRange) as item}
-            {#if selectedSlots.startRange[item].status === SlotStatus.AVAILABLE}
-              <option value={item}>{item}</option>
-            {/if}
-          {/each}
-        </select>
-        {#if $errors.start}
-          <p class="CrispMessage" data-type="error">{$errors.start}</p>
-        {/if}
-      </label>
+        <label class="CrispLabel" for="startTime">
+          <span data-mandatory style="color: inherit;"> Start Time </span>
+          <select class="CrispSelect w-100" bind:value={$form.start}>
+            <option value="" disabled selected> Select a start time </option>
+            {#each Object.keys(selectedSlots.startRange) as item}
+              {#if selectedSlots.startRange[item].status === SlotStatus.AVAILABLE}
+                <option value={item}>{item}</option>
+              {/if}
+            {/each}
+          </select>
+          {#if $errors.start}
+            <p class="CrispMessage" data-type="error">{$errors.start}</p>
+          {/if}
+        </label>
 
-      <label class="CrispLabel" for="endTime">
-        <span data-mandatory style="color: inherit;"> End Time </span>
-        <select class="CrispSelect w-100" bind:value={$form.end}>
-          <option value="" disabled selected> Select an end time </option>
-          {#each Object.keys(selectedSlots.endRange) as item}
-            {#if selectedSlots.endRange[item].status === SlotStatus.AVAILABLE}
-              <option value={item}>{item}</option>
-            {/if}
-          {/each}
-        </select>
-        {#if $errors.end}
-          <p class="CrispMessage" data-type="error">{$errors.end}</p>
-        {/if}
-      </label>
-    </form>
+        <label class="CrispLabel" for="endTime">
+          <span data-mandatory style="color: inherit;"> End Time </span>
+          <select class="CrispSelect w-100" bind:value={$form.end}>
+            <option value="" disabled selected> Select an end time </option>
+            {#each Object.keys(selectedSlots.endRange) as item}
+              {#if selectedSlots.endRange[item].status === SlotStatus.AVAILABLE}
+                <option value={item}>{item}</option>
+              {/if}
+            {/each}
+          </select>
+          {#if $errors.end}
+            <p class="CrispMessage" data-type="error">{$errors.end}</p>
+          {/if}
+        </label>
+      </form>
+    {:else}
+      <table class="FancyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#if currentEquipment && currentEquipment.trainingSession.length > 0}
+            {#each currentEquipment.trainingSession as day}
+              <tr>
+                <td>{day.start.toLocaleDateString('en-US', options)}</td>
+                <td>
+                  {new Date(day.start).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                  })}
+                </td>
+                <td>
+                  {new Date(day.end).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                  })}
+                </td>
+              </tr>
+            {/each}
+          {:else}
+            <tr class="empty">
+              <td colspan="3">
+                <i class="CrispMessage" data-type="error" data-format="box"> No results found </i>
+              </td>
+            </tr>
+          {/if}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">
+              Showing {currentEquipment.trainingSession?.length ?? 0} result(s)
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    {/if}
   </div>
   <div class="Row--j-end gap-10" slot="footer">
-    <button
-      class="CrispButton"
-      data-type="dark"
-      form="cartItemForm"
-      disabled={!dateSelector || !$form.start || !$form.end}
-    >
-      Add to cart
-    </button>
+    {#if $$props.trained}
+      <button
+        class="CrispButton"
+        data-type="dark"
+        form="cartItemForm"
+        disabled={!dateSelector || !$form.start || !$form.end}
+      >
+        Add to cart
+      </button>
+    {:else}
+      <button
+        class="CrispButton"
+        data-type="dark"
+        on:click={() => {
+          modal = false;
+        }}
+      >
+        Close
+      </button>
+    {/if}
   </div>
 </Pane>
 

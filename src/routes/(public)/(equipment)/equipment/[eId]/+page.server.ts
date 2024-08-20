@@ -1,4 +1,4 @@
-import { getEquipmentById } from '$db/Equipment.db.js';
+import { getEquipmentById, getUserTrainingEquipment } from '$db/Equipment.db.js';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 import { CartItemZSchema } from '$lib/schemas';
@@ -8,13 +8,20 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { ESecondaryStatus } from '@prisma/client';
 
 // @ts-ignore
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
   const equipment = await getEquipmentById(params.eId);
+  let trainedUsers = undefined;
+  if (locals.session?.user !== undefined) {
+    trainedUsers = await getUserTrainingEquipment(params.eId, locals.session?.user.id);
+  }
+
   if (equipment === undefined) {
     throw redirect(307, '/equipment');
   }
+
   return {
     equipment,
+    trainedUsers: trainedUsers,
     cartItemForm: await superValidate(zod(CartItemZSchema)),
     isDeleted:
       equipment.secondaryStatus === ESecondaryStatus.DELETED ||
