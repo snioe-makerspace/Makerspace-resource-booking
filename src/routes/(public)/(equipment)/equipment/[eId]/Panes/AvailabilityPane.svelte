@@ -81,8 +81,6 @@
     month: 'short',
     day: 'numeric'
   };
-
-  console.log(currentEquipment.trainingSession);
 </script>
 
 <Pane className="CartItemPane" bind:open={modal} style="--paneWidth: 420px;">

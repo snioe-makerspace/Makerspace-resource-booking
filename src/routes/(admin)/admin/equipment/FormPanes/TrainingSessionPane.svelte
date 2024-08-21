@@ -50,8 +50,6 @@
 
   $: addModeItem = null as ETrainingSessionSchema | null;
 
-  console.log('currentEquipment', currentEquipment);
-
   $: eTrainingSession = currentEquipment?.trainingSession;
 
   $: options = {
@@ -88,8 +86,6 @@
     selectedEndTime: operations.add[0]?.end || '',
     selectedStartTime: operations.add[0]?.start || ''
   });
-
-  $: console.log(operations.delete);
 </script>
 
 <Pane bind:open={modal} style="--paneWidth: 500px;" on:close={() => (modal = false)}>
@@ -192,8 +188,9 @@
             {/each}
             {#each operations.add as day}
               <tr class="add">
-                <td colspan="4">
+                <td colspan="4" style="gap: 15px;">
                   <Calendar bind:value={dateSelector} {maxOffset} bind:blackout />
+
                   <label class="CrispLabel" for="dateSelector">
                     <span data-mandatory style="color: inherit;"> Date </span>
                     <input
@@ -209,6 +206,7 @@
                       }) || 'Select a date'}
                     />
                   </label>
+
                   <label class="CrispLabel" for="startTime">
                     <span data-mandatory style="color: inherit;"> Start Time </span>
                     <select class="CrispSelect w-100" bind:value={day.start}>
@@ -220,6 +218,7 @@
                       {/each}
                     </select>
                   </label>
+
                   <label class="CrispLabel" for="endTime">
                     <span data-mandatory style="color: inherit;"> End Time </span>
                     <select class="CrispSelect w-100" bind:value={day.end}>

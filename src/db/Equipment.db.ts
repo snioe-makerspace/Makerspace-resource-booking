@@ -207,6 +207,29 @@ export async function getECategories() {
   return await db.eCategories.findMany();
 }
 
+export async function getESessions() {
+  return await db.eTrainingSession.findMany({
+    select: {
+      id: true,
+      equipmentId: true,
+      start: true,
+      end: true
+    }
+  });
+}
+
+export async function getSessionUsers() {
+  return await db.eTraining.findMany({
+    select: {
+      id: true,
+      userId: true,
+      user: true,
+      sessionId: true,
+      session: true
+    }
+  });
+}
+
 export async function upsertECategories(categories: ECategoriesSchema[]) {
   return await db.$transaction(
     categories.map((category) =>

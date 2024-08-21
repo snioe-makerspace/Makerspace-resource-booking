@@ -122,6 +122,30 @@ export const ETrainingCRUDSchema = z.object({
 
 export type ETrainingCRUDSchema = z.infer<typeof ETrainingCRUDSchema>;
 
+export const EAttendeeZSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  user_id: z.string(),
+  sessionId: z.string()
+});
+
+export type EAttendeeSchema = z.infer<typeof EAttendeeZSchema>;
+
+export const EAttendanceZSchema = z.object({
+  add: z.array(EAttendeeZSchema),
+  delete: z.array(z.string())
+});
+
+export type EAttendanceSchema = z.infer<typeof EAttendanceZSchema>;
+
+export const ETrainingSchema = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  sessionId: z.string()
+});
+
+export type ETrainingSchema = z.infer<typeof ETrainingSchema>;
+
 export const EZodSchema = z.object({
   id: z.string().optional().or(z.literal('')),
   name: z.string().min(2),

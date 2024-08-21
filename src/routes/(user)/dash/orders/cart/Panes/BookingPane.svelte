@@ -19,7 +19,6 @@
     dataType: 'json',
     taintedMessage: null,
     onSubmit() {
-      console.log($form);
       form.set({
         ...$form,
         cartId: instances[0].cartId,

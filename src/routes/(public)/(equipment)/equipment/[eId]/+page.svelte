@@ -73,7 +73,7 @@
         {@html data.equipment.description}
       </div>
       <a on:click={() => (seemore = !seemore)} href={null} class="w-100 text-sm">
-        {seemore ? 'See Specs' : 'Hide Specs'}
+        {seemore ? 'Hide Specs' : 'See Specs'}
       </a>
       {#if seemore}
         <div class="w-100">

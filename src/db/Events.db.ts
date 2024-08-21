@@ -66,8 +66,6 @@ export async function getEventById(id: string) {
 }
 
 export async function upsertEvent(event: EventSchema) {
-  console.log(event);
-
   return await db.event.upsert({
     where: {
       id: event.id || '0'
