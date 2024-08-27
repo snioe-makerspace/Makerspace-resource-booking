@@ -111,7 +111,6 @@ export async function getUserTrainingEquipment(equipmentId: string, userId: stri
     .findFirst({
       where: {
         AND: {
-          equipmentId,
           userId
         }
       },
