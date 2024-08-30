@@ -49,6 +49,7 @@
     bind:currentEquipment={data.equipment}
     bind:instanceId={selectedInstance['id']}
     bind:trained={data.trainedUsers}
+    bind:day={data.trainingDay}
   />
 {/if}
 

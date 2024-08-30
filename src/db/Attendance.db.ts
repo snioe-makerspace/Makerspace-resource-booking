@@ -6,7 +6,8 @@ export async function addAttendees(attendees: EAttendeeSchema[]) {
     data: attendees.map((attendee) => ({
       id: attendee.id,
       userId: attendee.user_id,
-      sessionId: attendee.sessionId
+      sessionId: attendee.sessionId,
+      datetime: attendee.datetime
     }))
   });
 }

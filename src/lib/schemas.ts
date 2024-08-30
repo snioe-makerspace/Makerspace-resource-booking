@@ -5,12 +5,6 @@ import {
   EventStatus,
   ProfileType,
   UserRole,
-  type Equipment,
-  type ECategories,
-  type Manual,
-  type Video,
-  type BookingItem,
-  type CartItem,
   EBillingType,
   PaymentStatus
 } from '@prisma/client';
@@ -108,9 +102,9 @@ export type EItemSchema = z.infer<typeof EItemZodSchema>;
 
 export const ETrainingSessionZSchema = z.object({
   id: z.string(),
-  equipmentId: z.string(),
-  start: z.string(), // will be string of date object
-  end: z.string() // will be string of date object
+  name: z.string().min(2),
+  categoryIds: z.array(z.string()),
+  day: z.nativeEnum(WeekDaysEnum)
 });
 
 export type ETrainingSessionSchema = z.infer<typeof ETrainingSessionZSchema>;
@@ -126,7 +120,8 @@ export const EAttendeeZSchema = z.object({
   id: z.string(),
   name: z.string(),
   user_id: z.string(),
-  sessionId: z.string()
+  sessionId: z.string(),
+  datetime: z.date()
 });
 
 export type EAttendeeSchema = z.infer<typeof EAttendeeZSchema>;

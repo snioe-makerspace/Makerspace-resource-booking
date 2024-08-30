@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getAllEquipment, getESessions, getSessionUsers } from '$db/Equipment.db';
+import { getESessions, getSessionUsers } from '$db/Equipment.db';
 import { getAllUsers } from '$db/User.db';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -10,7 +10,7 @@ import { addAttendees, deleteAttendees } from '$db/Attendance.db';
 // @ts-ignore
 export const load: PageServerLoad = async () => {
   return {
-    allEquipment: await getAllEquipment(),
+    // allEquipment: await getAllEquipment(),
     allSessions: await getESessions(),
     allSessionUsers: await getSessionUsers(),
     allUsers: await getAllUsers(),

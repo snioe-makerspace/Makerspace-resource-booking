@@ -26,6 +26,12 @@ export const ADMIN_ROUTES: Route[] = [
     children: [] as Route[]
   },
   {
+    name: 'Sessions',
+    route: '/admin/sessions',
+    icon: 59404,
+    children: [] as Route[]
+  },
+  {
     name: 'Events',
     route: '/admin/events',
     icon: 59512,

@@ -2,18 +2,21 @@
 <script lang="ts">
   import { WeekDaysEnum } from '$lib/schemas';
 
-  export let { days, single, id } = $$props as {
-    days: WeekDaysEnum[];
+  export let { days, single, id, blocked } = $$props as {
+    days: WeekDaysEnum;
     single?: boolean;
     id?: string;
+    blocked?: WeekDaysEnum[];
   };
 
   const valueOf = (day: string) => {
     return WeekDaysEnum[day as keyof typeof WeekDaysEnum];
   };
+
+  console.log(blocked);
 </script>
 
-<ul class="WeekDays">
+<ul class="WeekDay">
   {#if single}
     {#each Object.keys(WeekDaysEnum) as day}
       <label class="WeekDay__item" for={id}>
@@ -23,20 +26,11 @@
         </span>
       </label>
     {/each}
-  {:else}
-    {#each Object.keys(WeekDaysEnum) as day}
-      <label class="WeekDay__item" for={day}>
-        <input type="checkbox" id={day} name={day} value={valueOf(day)} bind:group={days} />
-        <span>
-          {day}
-        </span>
-      </label>
-    {/each}
   {/if}
 </ul>
 
 <style lang="scss">
-  .WeekDays {
+  .WeekDay {
     list-style: none;
     @include make-flex($dir: row);
     gap: 10px;

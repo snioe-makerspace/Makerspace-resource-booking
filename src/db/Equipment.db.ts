@@ -1,7 +1,7 @@
 import { SupabaseEnum } from '$lib/Enums';
 import { getStorageUrl } from '$lib/SupabaseUtils';
 import { db } from '$lib/prisma';
-import type { ECategoriesSchema, EItemSchema, EquipmentById } from '$lib/schemas';
+import type { ECategoriesSchema, EItemSchema, EquipmentById, WeekDaysEnum } from '$lib/schemas';
 import {
   ESecondaryStatus,
   type ECategories,
@@ -55,8 +55,7 @@ export async function getAllEquipment(): Promise<
       instances: true,
       category: true,
       manuals: true,
-      videos: true,
-      trainingSession: true
+      videos: true
     }
   });
 }
@@ -83,13 +82,6 @@ export async function getEquipmentById(id: string): Promise<EquipmentById> {
             }
           }
         },
-        trainingSession: {
-          select: {
-            id: true,
-            start: true,
-            end: true
-          }
-        },
         category: true,
         manuals: true,
         videos: true
@@ -106,7 +98,20 @@ export async function getEquipmentById(id: string): Promise<EquipmentById> {
     }));
 }
 
-export async function getUserTrainingEquipment(equipmentId: string, userId: string) {
+export async function getUserTrainingEquipment(equipmentsId: string, userId: string) {
+  const categoryId = await db.equipment.findFirst({
+    where: {
+      id: equipmentsId
+    },
+    select: {
+      category: {
+        select: {
+          id: true
+        }
+      }
+    }
+  });
+
   return await db.eTraining
     .findFirst({
       where: {
@@ -115,19 +120,70 @@ export async function getUserTrainingEquipment(equipmentId: string, userId: stri
         }
       },
       select: {
-        userId: true
+        userId: true,
+        session: {
+          select: {
+            categoryIds: true
+          }
+        }
       }
     })
     .then((res) => {
-      if (res) {
-        return true;
+      if (res && categoryId) {
+        return res.session.categoryIds.includes(categoryId.category.id);
       } else {
         return false;
       }
-    })
-    .catch(() => {
-      return false;
     });
+  // return await db.eTraining
+  //   .findFirst({
+  //     where: {
+  //       AND: {
+  //         userId
+  //       }
+  //     },
+  //     select: {
+  //       userId: true
+  //     }
+  //   })
+  //   .then((res) => {
+  //     if (res) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   })
+  //   .catch(() => {
+  //     return false;
+  //   });
+}
+
+export async function getTrainingDay(equipmentsId: string) {
+  const categoryId = await db.equipment.findFirst({
+    where: {
+      id: equipmentsId
+    },
+    select: {
+      category: {
+        select: {
+          id: true
+        }
+      }
+    }
+  });
+
+  return await db.eTrainingSession
+    .findFirst({
+      where: {
+        categoryIds: {
+          has: categoryId?.category.id
+        }
+      },
+      select: {
+        day: true
+      }
+    })
+    .then((res) => res?.day);
 }
 
 export async function upsertEquipment(equipment: Equipment) {
@@ -147,6 +203,7 @@ export async function upsertEquipment(equipment: Equipment) {
       model: equipment.model,
       image: equipment.image,
       description: equipment.description,
+      specifications: equipment.specifications,
       eCategoriesId: equipment.eCategoriesId
     }
   });
@@ -210,9 +267,9 @@ export async function getESessions() {
   return await db.eTrainingSession.findMany({
     select: {
       id: true,
-      equipmentId: true,
-      start: true,
-      end: true
+      name: true,
+      categoryIds: true,
+      day: true
     }
   });
 }
@@ -224,7 +281,8 @@ export async function getSessionUsers() {
       userId: true,
       user: true,
       sessionId: true,
-      session: true
+      session: true,
+      datetime: true
     }
   });
 }

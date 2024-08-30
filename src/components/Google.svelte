@@ -70,22 +70,21 @@
         >
           Admin Panel
         </a>
-      {:else}
-        <a
-          href="/dash"
-          class="CrispMenu__item Google__profile--item"
-          data-icon={String.fromCharCode(59505)}
-        >
-          Dashboard
-        </a>
-        <a
-          href="/dash/orders/cart"
-          class="CrispMenu__item Google__profile--item"
-          data-icon={String.fromCharCode(59596)}
-        >
-          Cart
-        </a>
       {/if}
+      <a
+        href="/dash"
+        class="CrispMenu__item Google__profile--item"
+        data-icon={String.fromCharCode(59505)}
+      >
+        Dashboard
+      </a>
+      <a
+        href="/dash/orders/cart"
+        class="CrispMenu__item Google__profile--item"
+        data-icon={String.fromCharCode(59596)}
+      >
+        Cart
+      </a>
       <form action="/auth?/logout" method="POST" class="w-100">
         <button type="submit" data-type="danger" class="CrispButton w-100"> Logout </button>
       </form>

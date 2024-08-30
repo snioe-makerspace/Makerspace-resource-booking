@@ -7,12 +7,9 @@
 
   export let data: PageData;
 
-  $: selectedEquipmentId = '';
   $: selectedSessionId = '';
-  $: allEquipment = data.allEquipment;
-  $: allSessions = data.allSessions.filter(
-    (session) => session.equipmentId === selectedEquipmentId
-  );
+  // $: allEquipment = data.allEquipment;
+  $: allSessionCategories = data.allSessions;
   $: attendees = data.allSessionUsers.filter(
     (sessionUser) => sessionUser.sessionId === selectedSessionId
   );
@@ -77,24 +74,24 @@
   <header>
     <label class="CrispLabel" for="startTime">
       <span data-mandatory style="color: inherit;"> Equipment </span>
-      <select class="CrispSelect w-100" bind:value={selectedEquipmentId}>
-        <option value="" disabled selected> Select an equipment </option>
-        {#each allEquipment as item}
+      <select class="CrispSelect w-100" bind:value={selectedSessionId}>
+        <option value="" disabled selected> Select a Category </option>
+        {#each allSessionCategories as item}
           <option value={item.id}>{item.name}</option>
         {/each}
       </select>
     </label>
-    <label class="CrispLabel" for="startTime">
+    <!-- <label class="CrispLabel" for="startTime">
       <span data-mandatory style="color: inherit;"> Date of Session </span>
       <select class="CrispSelect w-100" bind:value={selectedSessionId}>
         <option value="" disabled selected> Select the date of training session </option>
         {#each allSessions as item}
-          <option value={item.id}
-            >{new Date(item.start).toLocaleDateString('en-US', options)}</option
-          >
+          <option value={item.id}>
+            {item.day}
+          </option>
         {/each}
       </select>
-    </label>
+    </label> -->
     <span class="Row--center gap-15">
       <button
         class="CrispButton"
@@ -107,13 +104,14 @@
             id: nanoid(),
             sessionId: selectedSessionId,
             name: '',
-            user_id: ''
+            user_id: '',
+            datetime: new Date()
           };
 
           operations.add = [...operations.add, addModeItem];
         }}
         data-type="dark-blue"
-        disabled={selectedEquipmentId === '' || selectedSessionId === ''}
+        disabled={selectedSessionId === ''}
       >
         Add Attendee
       </button>
@@ -132,6 +130,7 @@
           <th> Name </th>
           <th> Email </th>
           <th> Mobile </th>
+          <th> Date </th>
           <th> </th>
         </tr>
       </thead>
@@ -142,6 +141,7 @@
               <td> {attendee.user.name} </td>
               <td> {attendee.user.email} </td>
               <td> {attendee.user.mobile} </td>
+              <td> {attendee.datetime.toLocaleDateString('en-GB')} </td>
               <td>
                 <button
                   class="CrispButton"
@@ -156,7 +156,8 @@
                           id: attendee.id,
                           sessionId: attendee.sessionId,
                           name: attendee.user.name,
-                          user_id: attendee.userId
+                          user_id: attendee.userId,
+                          datetime: attendee.datetime
                         }
                       ];
                     }
@@ -224,7 +225,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="3">
+          <td colspan="4">
             Showing {attendees?.length ?? 0} result(s)
           </td>
           <td style="display: flex; justify-content: end">

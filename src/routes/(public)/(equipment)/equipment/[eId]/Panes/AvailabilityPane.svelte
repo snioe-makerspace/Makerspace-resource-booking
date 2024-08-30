@@ -8,13 +8,14 @@
   import { SlotStatus, getSelectionSlots, getSlots } from '$utils/AvailabilityRules';
   import { getWeekdayDates, inverseWeekDaysEnum } from '$utils/WeekDayDates';
 
-  export let { modal, formStore, currentEquipment, instanceId, userId, trained } = $$props as {
+  export let { modal, formStore, currentEquipment, instanceId, userId, trained, day } = $$props as {
     modal: boolean;
     userId: string;
     instanceId: string;
     formStore: SuperValidated<CartItemSchema>;
     currentEquipment: EquipmentById | null;
     trained: boolean;
+    day?: string;
   };
 
   $: equipmentId = currentEquipment?.id!;
@@ -93,8 +94,7 @@
       </i>
     {:else}
       <i class="CrispMessage" data-type="error" data-format="box">
-        You are not trained for this equipment. Please attend one of the training sessions mentioned
-        below.
+        You are not trained for this equipment. Please attend one of the training sessions on {day}.
       </i>
     {/if}
     {#if $$props.trained}
@@ -160,7 +160,7 @@
           {/if}
         </label>
       </form>
-    {:else}
+      <!-- {:else}
       <table class="FancyTable">
         <thead>
           <tr>
@@ -170,33 +170,7 @@
           </tr>
         </thead>
         <tbody>
-          {#if currentEquipment && currentEquipment.trainingSession.length > 0}
-            {#each currentEquipment.trainingSession as day}
-              <tr>
-                <td>{day.start.toLocaleDateString('en-US', options)}</td>
-                <td>
-                  {new Date(day.start).toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true
-                  })}
-                </td>
-                <td>
-                  {new Date(day.end).toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true
-                  })}
-                </td>
-              </tr>
-            {/each}
-          {:else}
-            <tr class="empty">
-              <td colspan="3">
-                <i class="CrispMessage" data-type="error" data-format="box"> No results found </i>
-              </td>
-            </tr>
-          {/if}
+
         </tbody>
         <tfoot>
           <tr>
@@ -205,7 +179,7 @@
             </td>
           </tr>
         </tfoot>
-      </table>
+      </table> -->
     {/if}
   </div>
   <div class="Row--j-end gap-10" slot="footer">

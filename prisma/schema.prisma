@@ -35,19 +35,19 @@ model RevalidateProfile {
 }
 
 model Equipment {
-  id              String             @id @unique @default(nanoid(7))
+  id              String           @id @unique @default(nanoid(7))
   name            String
   model           String
-  description     String             @db.VarChar(2500)
+  description     String           @db.VarChar(2500)
   image           String
   eCategoriesId   String
-  secondaryStatus ESecondaryStatus   @default(ACTIVE) @map("secondary_status")
-  specifications  String             @db.VarChar(2500)
+  secondaryStatus ESecondaryStatus @default(ACTIVE) @map("secondary_status")
+  specifications  String           @db.VarChar(2500)
   instances       EInstance[]
-  category        ECategories        @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
+  category        ECategories      @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
   manuals         Manual[]
   videos          Video[]
-  trainingSession ETrainingSession[]
+  // trainingSession ETrainingSession[]
 }
 
 model Manual {
@@ -86,14 +86,15 @@ model ETraining {
   user      Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionId String
   session   ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  datetime  DateTime
 }
 
 model ETrainingSession {
-  id          String      @id @unique @default(nanoid(7))
-  equipmentId String
-  equipment   Equipment   @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  start       DateTime
-  end         DateTime
+  id          String        @id @unique @default(nanoid(7))
+  name        String
+  categoryIds String[]
+  categories  ECategories[]
+  day         String
   bookings    ETraining[]
 }
 
@@ -142,9 +143,10 @@ model BookingItem {
 }
 
 model ECategories {
-  id        String      @id @unique @default(nanoid(7))
-  name      String
-  equipment Equipment[]
+  id              String             @id @unique @default(nanoid(7))
+  name            String
+  equipment       Equipment[]
+  trainingSession ETrainingSession[]
 }
 
 model RepoElectronics {
