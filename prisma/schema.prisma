@@ -208,10 +208,10 @@ model Tutorials {
 model ETrainingSessionBooking {
   id               String           @id @unique @default(nanoid(7))
   user_id          String           @db.Uuid
+  user             Profile          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   DateTime         DateTime
   sessionId        String
   ETrainingSession ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  profile          Profile          @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 enum EStatus {

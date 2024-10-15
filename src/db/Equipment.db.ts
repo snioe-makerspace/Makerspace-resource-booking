@@ -220,7 +220,7 @@ export async function getRegisteredUser(userId: string, sessionId: string) {
     .findFirst({
       where: {
         AND: {
-          userId,
+          user_id: userId,
           sessionId
         }
       }
