@@ -184,7 +184,7 @@ export async function getTrainingDay(equipmentsId: string) {
         day: true
       }
     })
-    .then((res) => res?.day);
+    .then((res) => res.day);
 }
 
 export async function getSessionId(equipmentsId: string) {

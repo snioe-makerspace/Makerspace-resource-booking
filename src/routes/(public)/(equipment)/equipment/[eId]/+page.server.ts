@@ -7,14 +7,11 @@ import {
 } from '$db/Equipment.db.js';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
-import { CartItemZSchema, RegisterFormSchema, RegisterFormZSchema } from '$lib/schemas';
+import { CartItemZSchema, RegisterFormZSchema } from '$lib/schemas';
 import { fail, type Actions, redirect } from '@sveltejs/kit';
 import { addToCart } from '$db/Cart.db';
 import { zod } from 'sveltekit-superforms/adapters';
 import { ESecondaryStatus } from '@prisma/client';
-import { get } from 'http';
-import { z } from 'zod';
-import { addAttendees } from '$db/Attendance.db';
 import { registerAttendee } from '$db/Session.db';
 
 // @ts-ignore
