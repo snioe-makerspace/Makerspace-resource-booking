@@ -18,3 +18,13 @@ export async function deleteSession(id: string) {
     }
   });
 }
+
+export async function registerAttendee(user_id: string, session_id: string) {
+  return await db.eTrainingSessionBooking.create({
+    data: {
+      userId: user_id,
+      sessionId: session_id,
+      DateTime: new Date()
+    }
+  });
+}

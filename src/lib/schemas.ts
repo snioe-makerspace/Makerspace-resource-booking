@@ -100,6 +100,14 @@ export const EItemZodSchema = z.object({
 
 export type EItemSchema = z.infer<typeof EItemZodSchema>;
 
+export const RegisterFormZSchema = z.object({
+  userId: z.string(),
+  equipmentId: z.string()
+  // Add any other fields as necessary
+});
+
+export type RegisterFormSchema = z.infer<typeof RegisterFormZSchema>;
+
 export const ETrainingSessionZSchema = z.object({
   id: z.string(),
   name: z.string().min(2),

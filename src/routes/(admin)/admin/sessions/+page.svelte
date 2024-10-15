@@ -9,7 +9,7 @@
 
   export let data: PageData;
 
-  $: ({ allSessions, allCategories, sessionForm } = data);
+  $: ({ allSessions, allCategories, sessionForm, allRegisteredUsers } = data);
 
   $: editModal = false;
   $: registrationModal = false;
@@ -33,7 +33,11 @@
   />
 {/if}
 
-<!-- <RegistrationsPane modal={registrationModal} eCategories={allCategories} formStore={sessionForm} /> -->
+<RegistrationsPane
+  bind:modal={registrationModal}
+  bind:registeredUsers={allRegisteredUsers}
+  bind:sessionID={sessionForm.data.id}
+/>
 
 <main class="AdminSessions">
   <header>
@@ -122,7 +126,15 @@
                 <button
                   class="CrispButton"
                   data-border="false"
-                  on:click={() => (registrationModal = true)}
+                  on:click={() => {
+                    if (sessionForm) {
+                      sessionForm.data = {
+                        ...session
+                      };
+                    }
+                    registrationModal = true;
+                    editSessionID = '';
+                  }}
                 >
                   Registrations
                 </button>

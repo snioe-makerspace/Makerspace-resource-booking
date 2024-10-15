@@ -1,12 +1,21 @@
-import { getEquipmentById, getTrainingDay, getUserTrainingEquipment } from '$db/Equipment.db.js';
+import {
+  getEquipmentById,
+  getRegisteredUser,
+  getSessionId,
+  getTrainingDay,
+  getUserTrainingEquipment
+} from '$db/Equipment.db.js';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
-import { CartItemZSchema } from '$lib/schemas';
+import { CartItemZSchema, RegisterFormSchema, RegisterFormZSchema } from '$lib/schemas';
 import { fail, type Actions, redirect } from '@sveltejs/kit';
 import { addToCart } from '$db/Cart.db';
 import { zod } from 'sveltekit-superforms/adapters';
 import { ESecondaryStatus } from '@prisma/client';
 import { get } from 'http';
+import { z } from 'zod';
+import { addAttendees } from '$db/Attendance.db';
+import { registerAttendee } from '$db/Session.db';
 
 // @ts-ignore
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -14,8 +23,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   // console.log(params);
   let trainedUsers = undefined;
   let trainingDay = '';
+  let registeredUser = undefined;
+
   if (locals.session?.user !== undefined) {
     trainedUsers = await getUserTrainingEquipment(params.eId, locals.session?.user.id);
+    const sessionId = (await getSessionId(params.eId)) || '';
+    registeredUser = await getRegisteredUser(locals.session?.user.id, sessionId);
   }
 
   if (!trainedUsers) {
@@ -30,7 +43,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     equipment,
     trainedUsers: trainedUsers,
     trainingDay: trainingDay,
+    registeredUser: registeredUser,
     cartItemForm: await superValidate(zod(CartItemZSchema)),
+    registerForm: await superValidate(zod(RegisterFormZSchema)),
     isDeleted:
       equipment.secondaryStatus === ESecondaryStatus.DELETED ||
       equipment.secondaryStatus === ESecondaryStatus.DISABLED
@@ -48,6 +63,23 @@ export const actions: Actions = {
     return {
       cartItemForm,
       response: await addToCart({ ...cartItemForm.data, userId: cartItemForm.data.userId! })
+    };
+  },
+  register: async ({ request }) => {
+    // console.log('register action', request);
+    const attendeeForm = await superValidate(request, zod(RegisterFormZSchema));
+
+    const sessionId = (await getSessionId(attendeeForm.data.equipmentId)) || '';
+
+    if (!attendeeForm.valid) {
+      return fail(400, { attendeeForm });
+    }
+
+    console.log(attendeeForm.data.userId, sessionId);
+
+    return {
+      attendeeForm,
+      response: await registerAttendee(attendeeForm.data.userId, sessionId)
     };
   }
 };

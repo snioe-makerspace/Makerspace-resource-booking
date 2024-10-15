@@ -13,12 +13,15 @@
   import type { SuperValidated } from 'sveltekit-superforms';
   import { superForm } from 'sveltekit-superforms';
 
-  export let { modal, registeredUsers } = $$props as {
+  export let { modal, registeredUsers, sessionID } = $$props as {
     modal: boolean;
     registeredUsers: any[];
+    sessionID: string;
   };
 
-  $: users = registeredUsers;
+  $: registeredUsers = registeredUsers.filter((user) => user.sessionId === sessionID);
+
+  $: console.log(sessionID);
 </script>
 
 <Pane bind:open={modal} style="--paneWidth: 450px;" on:close={() => (modal = false)}>
@@ -32,22 +35,22 @@
         </tr>
       </thead>
       <tbody>
-        <!-- {#if users && users.length === 0}
+        {#if registeredUsers && registeredUsers.length === 0}
           <tr>
             <td colspan="2">No users found</td>
           </tr>
         {:else}
-          {#each users as user}
+          {#each registeredUsers as user}
             <tr>
-              <td>{user.name}</td>
-              <td>{user.type === 'STUDENT' ? user.typeData.studentId : 'Null'}</td>
+              <td>{user.user.name}</td>
+              <td>{user.user.type === 'STUDENT' ? user.user.typeData.studentId : '-'}</td>
             </tr>
           {/each}
-        {/if} -->
+        {/if}
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2"> Showing users </td>
+          <td colspan="2"> Showing {registeredUsers.length || 0} user(s) </td>
         </tr>
       </tfoot>
     </table>

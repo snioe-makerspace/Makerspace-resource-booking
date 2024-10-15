@@ -187,6 +187,70 @@ export async function getTrainingDay(equipmentsId: string) {
     .then((res) => res?.day);
 }
 
+export async function getSessionId(equipmentsId: string) {
+  const categoryId = await db.equipment.findFirst({
+    where: {
+      id: equipmentsId
+    },
+    select: {
+      category: {
+        select: {
+          id: true
+        }
+      }
+    }
+  });
+
+  return await db.eTrainingSession
+    .findFirst({
+      where: {
+        categoryIds: {
+          has: categoryId?.category.id
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+    .then((res) => res?.id);
+}
+
+export async function getRegisteredUser(userId: string, sessionId: string) {
+  return await db.eTrainingSessionBooking
+    .findFirst({
+      where: {
+        AND: {
+          userId,
+          sessionId
+        }
+      }
+    })
+    .then((res) => {
+      console.log(res);
+      if (res) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+}
+
+export async function getRegisteredUsers() {
+  return await db.eTrainingSessionBooking.findMany({
+    select: {
+      sessionId: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          typeData: true
+        }
+      }
+    }
+  });
+}
+
 export async function upsertEquipment(equipment: Equipment) {
   return await db.equipment.upsert({
     where: {

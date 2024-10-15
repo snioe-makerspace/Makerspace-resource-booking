@@ -2,6 +2,17 @@ import { db } from '$lib/prisma';
 import type { EAttendeeSchema } from '$lib/schemas';
 
 export async function addAttendees(attendees: EAttendeeSchema[]) {
+  await db.eTrainingSessionBooking.deleteMany({
+    where: {
+      userId: {
+        in: attendees.map((attendee) => attendee.user_id)
+      },
+      sessionId: {
+        in: attendees.map((attendee) => attendee.sessionId)
+      }
+    }
+  });
+
   return await db.eTraining.createMany({
     data: attendees.map((attendee) => ({
       id: attendee.id,

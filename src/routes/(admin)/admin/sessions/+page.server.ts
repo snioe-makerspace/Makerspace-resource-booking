@@ -1,4 +1,4 @@
-import { getECategories, getESessions } from '$db/Equipment.db';
+import { getECategories, getESessions, getRegisteredUsers } from '$db/Equipment.db';
 import { superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -9,6 +9,7 @@ import { deleteSession, upsertSessions } from '$db/Session.db';
 // @ts-ignore
 export const load: PageServerLoad = async () => {
   return {
+    allRegisteredUsers: await getRegisteredUsers(),
     allSessions: await getESessions(),
     allCategories: await getECategories(),
     sessionForm: await superValidate(zod(ETrainingSessionZSchema))

@@ -46,6 +46,8 @@
     bind:userId={user.id}
     bind:modal={availabilityPane}
     bind:formStore={data.cartItemForm}
+    bind:registeredUser={data.registeredUser}
+    bind:registerForm={data.registerForm}
     bind:currentEquipment={data.equipment}
     bind:instanceId={selectedInstance['id']}
     bind:trained={data.trainedUsers}
