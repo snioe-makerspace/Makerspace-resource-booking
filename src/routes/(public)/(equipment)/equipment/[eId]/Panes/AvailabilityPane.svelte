@@ -4,12 +4,7 @@
   import Calendar from '$components/Calendar.svelte';
   import { superForm } from 'sveltekit-superforms/client';
   import type { SuperValidated } from 'sveltekit-superforms';
-  import type {
-    CartItemSchema,
-    EquipmentById,
-    RegisterFormSchema,
-    RegisterFormType
-  } from '$lib/schemas';
+  import type { CartItemSchema, EquipmentById, RegisterFormSchema } from '$lib/schemas';
   import { SlotStatus, getSelectionSlots, getSlots } from '$utils/AvailabilityRules';
   import { getWeekdayDates, inverseWeekDaysEnum } from '$utils/WeekDayDates';
   import { z } from 'zod';
@@ -82,9 +77,6 @@
     id: 'registerForm',
     taintedMessage: null,
     dataType: 'json',
-    onSubmit() {
-      console.log('Registering for training', +rForm);
-    },
     onResult(event) {
       if (event.result.status === 200) {
         addToast({
@@ -113,14 +105,6 @@
     selectedEndTime: `${$form.end}`,
     selectedStartTime: `${$form.start}`
   });
-
-  $: options = {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  };
-
-  $: console.log($$props.registeredUser);
 </script>
 
 <Pane className="CartItemPane" bind:open={modal} style="--paneWidth: 420px;">
