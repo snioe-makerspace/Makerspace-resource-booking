@@ -32,11 +32,11 @@
   });
 
   $: user = $SessionStore?.user ?? null;
-  $: availabilityPane = false;
   $: manualPane = false;
   $: videoPane = false;
   $: selectedInstance = null as EquipmentById['instances'][0] | null;
   $: seemore = false;
+  $: availabilityPane = false;
 
   $: isUserBlacklisted = user?.app_metadata.custom_claims.is_blacklisted ?? false;
 </script>

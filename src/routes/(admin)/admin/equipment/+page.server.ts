@@ -92,7 +92,8 @@ export const actions: Actions = {
         ...upsertEquipmentForm.data,
         id: upsertEquipmentForm.data.id || '',
         image: upsertEquipmentForm.data.image as string,
-        secondaryStatus: upsertEquipmentForm.data.secondaryStatus || ESecondaryStatus.ACTIVE
+        secondaryStatus: upsertEquipmentForm.data.secondaryStatus || ESecondaryStatus.ACTIVE,
+        onlyForPHDs: upsertEquipmentForm.data.onlyForPHDs || (false as boolean)
       }),
       allEquipment: await getAllEquipment()
     });

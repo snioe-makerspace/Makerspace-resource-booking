@@ -11,7 +11,7 @@ export async function upsertSessions(sessions: ETrainingSessionSchema) {
   });
 }
 
-export async function deleteSessions(id: string) {
+export async function deleteSession(id: string) {
   return await db.eTrainingSession.delete({
     where: {
       id

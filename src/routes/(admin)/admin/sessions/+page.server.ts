@@ -2,9 +2,9 @@ import { getECategories, getESessions } from '$db/Equipment.db';
 import { superValidate } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { ETrainingSchema, ETrainingSessionZSchema } from '$lib/schemas';
+import { ETrainingSessionZSchema } from '$lib/schemas';
 import { fail, type Actions } from '@sveltejs/kit';
-import { deleteSessions, upsertSessions } from '$db/Session.db';
+import { deleteSession, upsertSessions } from '$db/Session.db';
 
 // @ts-ignore
 export const load: PageServerLoad = async () => {
@@ -28,16 +28,12 @@ export const actions: Actions = {
       response: await upsertSessions(sessionForm.data)
     };
   },
-  deleteSessions: async ({ request }) => {
-    const sessionForm = await superValidate(request, zod(ETrainingSessionZSchema));
-
-    if (!sessionForm.valid) {
-      return fail(400, { sessionForm });
-    }
+  delete: async ({ request }) => {
+    const formData = await request.formData();
+    const id = formData.get('id') as string;
 
     return {
-      form: sessionForm,
-      response: await deleteSessions(sessionForm.data.id)
+      response: await deleteSession(id)
     };
   }
 };

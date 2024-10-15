@@ -12,6 +12,7 @@
     currentInstance: EItemSchema;
     formStore: SuperValidated<EItemSchema>;
   };
+  $: console.log(formStore.data);
 
   const {
     form: instanceForm,

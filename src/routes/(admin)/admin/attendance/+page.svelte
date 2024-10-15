@@ -67,6 +67,7 @@
     filteredUsers = filteredUsers.filter(
       (user) => !attendees.map((i) => i.userId).includes(user.id)
     );
+    console.log(filteredUsers);
   }
 </script>
 
@@ -177,7 +178,7 @@
         {/if}
         {#each operations.add as item}
           <tr class="add">
-            <td colspan="4">
+            <td colspan="5">
               <div class="Row--center gap-10 AdminAttendance__autocomplete">
                 <input
                   type="text"
@@ -200,7 +201,7 @@
                           item.name = user.name;
                         }}
                       >
-                        {user.name}
+                        {user.name} | {user.typeData.studentId} | {user.email}
                       </button>
                     </li>
                   {/each}

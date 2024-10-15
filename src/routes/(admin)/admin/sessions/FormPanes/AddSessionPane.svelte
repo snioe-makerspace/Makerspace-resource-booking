@@ -1,7 +1,6 @@
 <script lang="ts">
   import Pane from '$components/Pane.svelte';
   import WeekDay from '$components/WeekDay.svelte';
-  import WeekDays from '$components/WeekDays.svelte';
   import nanoid from '$lib/nanoid';
   import { WeekDaysEnum, type ECategoriesSchema, type ETrainingSessionSchema } from '$lib/schemas';
   import { addToast } from '$store/ToastStore';
@@ -14,12 +13,10 @@
     formStore: SuperValidated<ETrainingSessionSchema>;
   };
 
-  const {
-    form: sessionForm,
-    constraints: sessionConstraints,
-    enhance: sessionEnhance
-  } = superForm(formStore, {
-    id: 'SessionForm',
+  $: console.log(formStore.data);
+
+  const { form: sessionForm, enhance: sessionEnhance } = superForm(formStore, {
+    id: 'sessionForm',
     dataType: 'json',
     onSubmit() {
       if ($sessionForm.id !== '') {
@@ -40,30 +37,36 @@
         });
       }
       modal = false;
-
-      console.log($sessionForm);
     },
     onResult(event) {
       if (event.result.status === 200) {
-        addToast({ message: 'Session added', type: 'success' });
+        addToast({
+          message:
+            $sessionForm.id !== undefined
+              ? 'Session Updated Successfully'
+              : 'Session Added Successfully',
+          type: 'success'
+        });
       }
     },
     taintedMessage: null
   });
 
-  $: isEdit = $sessionForm.id !== '';
+  $: isEdit = $sessionForm.id !== undefined;
+  $: console.log($sessionForm.name);
 </script>
 
 <Pane bind:open={modal} style="--paneWidth: 450px;" on:close={() => (modal = false)}>
   <p slot="header">
     {isEdit ? 'Edit' : 'Add'} Training Session
   </p>
+  <!-- svelte-ignore missing-declaration -->
   <svelte:fragment slot="main">
     <form
       method="POST"
       id="sessionForm"
       use:sessionEnhance
-      class="SessionForm"
+      class="SessionForm Col--center gap-10 w-100"
       style="overflow: hidden;"
       action="/admin/sessions?/upsertSession"
     >
@@ -74,17 +77,12 @@
           type="text"
           name="name"
           class="CrispInput"
-          style="--crp-input-width: 50%"
+          style="--crp-input-width: 100%"
           bind:value={$sessionForm.name}
           aria-invalid={$sessionForm.name ? 'true' : undefined}
         />
       </label>
-      <label
-        class="CrispLabel"
-        for="day"
-        data-direction="row"
-        style="justify-content: space-between;"
-      >
+      <label class="CrispLabel" for="day">
         <span data-mandatory style="color: inherit;"> Select day </span>
         <WeekDay bind:days={$sessionForm.day} single={true} />
       </label>

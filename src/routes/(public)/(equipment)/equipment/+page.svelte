@@ -58,7 +58,10 @@
         <img src={item.image} alt={item.name} />
         <h2 class="w-100">{item.name}</h2>
         <p class="w-100">{item.model}</p>
-        <a href="/equipment/{item.id}" class="CrispButton w-100">Learn more</a>
+        <div class="Equipment__card--buttons">
+          <a href="/equipment/{item.id}" class="CrispButton">Learn more</a>
+          <!-- <a href="/equipment/{item.id}" class="CrispButton" data-type="dark-blue">Book</a> -->
+        </div>
       </div>
     {/each}
   </div>
@@ -113,6 +116,17 @@
           color: var(--orangeBrown);
           background: var(--yellowOrange);
           @include make-flex($just: center, $align: center);
+        }
+      }
+
+      &--buttons {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+
+        & > a {
+          width: 100%;
+          flex: 1;
         }
       }
 

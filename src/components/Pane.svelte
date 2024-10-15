@@ -76,14 +76,6 @@
 
 <style lang="scss">
   .Pane {
-    &__backdrop {
-      top: 0;
-      left: 0;
-      z-index: -1;
-      position: fixed;
-      @include box(100vw, 100vh);
-    }
-
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -96,6 +88,13 @@
 
     @include respondAt(600px) {
       --paneWidth: auto !important;
+    }
+    &__backdrop {
+      top: 0;
+      left: 0;
+      z-index: -1;
+      position: fixed;
+      @include box(100vw, 100vh);
     }
 
     & > div {

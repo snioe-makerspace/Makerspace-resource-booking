@@ -9,19 +9,20 @@ datasource db {
 }
 
 model Profile {
-  id                String             @id @db.Uuid
+  id                String                    @id @db.Uuid
   name              String
   mobile            String
   email             String
-  role              UserRole           @default(user)
-  isNew             Boolean            @default(true) @map("isnew")
-  isBlacklisted     Boolean            @default(false) @map("is_blacklisted")
+  role              UserRole                  @default(user)
+  isNew             Boolean                   @default(true) @map("isnew")
+  isBlacklisted     Boolean                   @default(false) @map("is_blacklisted")
   cartId            String?
-  type              ProfileType        @default(STUDENT)
-  typeData          Json?              @default("{}") @map("type_data") @db.Json
+  type              ProfileType               @default(STUDENT)
+  typeData          Json?                     @default("{}") @map("type_data") @db.Json
   bookings          Booking[]
   cart              Cart?
   training          ETraining[]
+  sessionBooking    ETrainingSessionBooking[]
   events            Event[]
   RevalidateProfile RevalidateProfile?
 
@@ -47,6 +48,7 @@ model Equipment {
   category        ECategories      @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
   manuals         Manual[]
   videos          Video[]
+  onlyForPHDs     Boolean          @default(false)
   // trainingSession ETrainingSession[]
 }
 
@@ -94,8 +96,15 @@ model ETrainingSession {
   name        String
   categoryIds String[]
   categories  ECategories[]
-  day         String
+  day         Json          @default("{}") @db.Json()
   bookings    ETraining[]
+}
+
+model ETrainingSessionBooking {
+  id       String   @id @unique @default(nanoid(7))
+  userId   String   @map("user_id") @db.Uuid
+  user     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  DateTime DateTime
 }
 
 model Cart {
@@ -226,6 +235,7 @@ enum ProfileType {
   STUDENT
   FACULTY
   STAFF
+  PHD
 }
 
 enum ESecondaryStatus {

@@ -94,8 +94,12 @@
       </i>
     {:else}
       <i class="CrispMessage" data-type="error" data-format="box">
-        You are not trained for this equipment. Please attend one of the training sessions on {day}.
+        You are not trained for this equipment.
       </i>
+      <i class="CrispMessage" data-type="info" data-format="box"
+        >Register yourself for an upcoming training session for this equipment on {day}</i
+      >
+      <button class="CrispButton" data-type="dark-blue" on:click={() => {}}>Register</button>
     {/if}
     {#if $$props.trained}
       <Calendar bind:value={dateSelector} {maxOffset} bind:blackout />
@@ -173,7 +177,8 @@
 
         </tbody>
         <tfoot>
-          <tr>
+          <tr>class="CrispButton"
+        data-type="dark"
             <td colspan="5">
               Showing {currentEquipment.trainingSession?.length ?? 0} result(s)
             </td>
@@ -185,9 +190,9 @@
   <div class="Row--j-end gap-10" slot="footer">
     {#if $$props.trained}
       <button
-        class="CrispButton"
-        data-type="dark"
         form="cartItemForm"
+        class="CrispButton"
+        data-type="dark-blue"
         disabled={!dateSelector || !$form.start || !$form.end}
       >
         Add to cart

@@ -11,6 +11,7 @@ import { get } from 'http';
 // @ts-ignore
 export const load: PageServerLoad = async ({ params, locals }) => {
   const equipment = await getEquipmentById(params.eId);
+  // console.log(params);
   let trainedUsers = undefined;
   let trainingDay = '';
   if (locals.session?.user !== undefined) {

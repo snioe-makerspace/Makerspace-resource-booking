@@ -127,6 +127,26 @@
         bind:image={$form.image}
       />
 
+      <label
+        class="CrispLabel"
+        for="onlyForPHDs"
+        style="flex-direction: row; align-items: center; justify-content: space-between; width: 100%;"
+      >
+        <span style="color: inherit;"> Only For PHDS </span>
+        <input
+          id="onlyForPHDs"
+          type="checkbox"
+          name="onlyForPHDs"
+          class="CrispCheckbox"
+          bind:checked={$form.onlyForPHDs}
+        />
+        {#if $errors.onlyForPHDs}
+          <p class="CrispMessage w-100" data-type="error">
+            {$errors.onlyForPHDs}
+          </p>
+        {/if}
+      </label>
+
       <label class="CrispLabel" for="description">
         <span style="color: inherit;"> Description </span>
         <TipTap name="location" bind:content={$form.description} />

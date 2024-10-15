@@ -130,6 +130,8 @@
             <option value={ProfileType.STUDENT}>Student</option>
             <option value={ProfileType.FACULTY}>Faculty</option>
             <option value={ProfileType.STAFF}>Staff</option>
+            <!--TODO: Add PDH option-->
+            <!-- <option value={ProfileType.PHD}>PHD</option> -->
           </select>
           {#if $errors.type}
             <p class="CrispMessage w-100" data-type="error">

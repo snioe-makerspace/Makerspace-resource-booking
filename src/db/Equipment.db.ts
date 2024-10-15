@@ -29,7 +29,8 @@ export async function getAllEquipmentPreview(): Promise<
         model: true,
         image: true,
         eCategoriesId: true,
-        secondaryStatus: true
+        secondaryStatus: true,
+        onlyForPHDs: true
       }
     })
     .then((res) => {
@@ -196,7 +197,8 @@ export async function upsertEquipment(equipment: Equipment) {
       model: equipment.model,
       image: equipment.image,
       description: equipment.description,
-      eCategoriesId: equipment.eCategoriesId
+      eCategoriesId: equipment.eCategoriesId,
+      onlyForPHDs: equipment.onlyForPHDs
     },
     create: {
       name: equipment.name,
@@ -204,7 +206,8 @@ export async function upsertEquipment(equipment: Equipment) {
       image: equipment.image,
       description: equipment.description,
       specifications: equipment.specifications,
-      eCategoriesId: equipment.eCategoriesId
+      eCategoriesId: equipment.eCategoriesId,
+      onlyForPHDs: equipment.onlyForPHDs
     }
   });
 }
@@ -263,7 +266,15 @@ export async function getECategories() {
   return await db.eCategories.findMany();
 }
 
-export async function getESessions() {
+export async function getESessions(): Promise<
+  {
+    id: string;
+    name: string;
+    categoryIds: string[];
+    day: WeekDaysEnum;
+  }[]
+> {
+  // @ts-ignore
   return await db.eTrainingSession.findMany({
     select: {
       id: true,
