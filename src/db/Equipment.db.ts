@@ -1,7 +1,7 @@
 import { SupabaseEnum } from '$lib/Enums';
 import { getStorageUrl } from '$lib/SupabaseUtils';
 import { db } from '$lib/prisma';
-import type { ECategoriesSchema, EItemSchema, EquipmentById, WeekDaysEnum } from '$lib/schemas';
+import type { ECategoriesSchema, EItemSchema, WeekDaysEnum } from '$lib/schemas';
 import {
   ESecondaryStatus,
   type ECategories,
@@ -184,7 +184,7 @@ export async function getTrainingDay(equipmentsId: string) {
         day: true
       }
     })
-    .then((res) => res.day);
+    .then((res) => res?.day);
 }
 
 export async function getSessionId(equipmentsId: string) {

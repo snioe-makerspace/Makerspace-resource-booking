@@ -2,7 +2,7 @@
   import Pane from '$components/Pane.svelte';
   import WeekDay from '$components/WeekDay.svelte';
   import nanoid from '$lib/nanoid';
-  import { WeekDaysEnum, type ECategoriesSchema, type ETrainingSessionSchema } from '$lib/schemas';
+  import { type ECategoriesSchema, type ETrainingSessionSchema } from '$lib/schemas';
   import { addToast } from '$store/ToastStore';
   import type { SuperValidated } from 'sveltekit-superforms';
   import { superForm } from 'sveltekit-superforms';

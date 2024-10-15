@@ -6,7 +6,6 @@
   import { superForm } from 'sveltekit-superforms/client';
   import UploadImage from '$components/UploadImage.svelte';
   import type { SuperValidated } from 'sveltekit-superforms';
-  import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import TipTap from '$components/TipTap.svelte';
   import { addToast } from '$store/ToastStore';
   import { SupabaseEnum } from '$lib/Enums';

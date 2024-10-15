@@ -1,6 +1,5 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import WeekDays from '$components/WeekDays.svelte';
   import clickOutside from '$directive/clickOutside';
   import { WeekDaysEnum } from '$lib/schemas';
   import type { PageData } from './$types';
@@ -33,11 +32,13 @@
   />
 {/if}
 
-<RegistrationsPane
-  bind:modal={registrationModal}
-  bind:registeredUsers={allRegisteredUsers}
-  bind:sessionID={sessionForm.data.id}
-/>
+{#if registrationModal}
+  <RegistrationsPane
+    bind:modal={registrationModal}
+    bind:registeredUsers={allRegisteredUsers}
+    bind:sessionID={sessionForm.data.id}
+  />
+{/if}
 
 <main class="AdminSessions">
   <header>
