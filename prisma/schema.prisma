@@ -206,7 +206,7 @@ model Tutorials {
 }
 
 model ETrainingSessionBooking {
-  id               String           @id @unique
+  id               String           @id @unique @default(nanoid(7))
   user_id          String           @db.Uuid
   DateTime         DateTime
   sessionId        String

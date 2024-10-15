@@ -66,20 +66,15 @@ export const actions: Actions = {
     };
   },
   register: async ({ request }) => {
-    // console.log('register action', request);
     const attendeeForm = await superValidate(request, zod(RegisterFormZSchema));
-
-    const sessionId = (await getSessionId(attendeeForm.data.equipmentId)) || '';
 
     if (!attendeeForm.valid) {
       return fail(400, { attendeeForm });
     }
 
-    console.log(attendeeForm.data.userId, sessionId);
-
     return {
       attendeeForm,
-      response: await registerAttendee(attendeeForm.data.userId, sessionId)
+      response: await registerAttendee(attendeeForm.data.userId, attendeeForm.data.equipmentId)
     };
   }
 };
