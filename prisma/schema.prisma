@@ -9,22 +9,22 @@ datasource db {
 }
 
 model Profile {
-  id                   String                          @id @db.Uuid
-  name                 String
-  mobile               String
-  email                String
-  role                 UserRole                        @default(user)
-  isNew                Boolean                         @default(true) @map("isnew")
-  isBlacklisted        Boolean                         @default(false) @map("is_blacklisted")
-  cartId               String?
-  type                 ProfileType                     @default(STUDENT)
-  typeData             Json?                           @default("{}") @map("type_data") @db.Json
-  bookings             Booking[]
-  cart                 Cart?
-  training             ETraining[]
-  sessionRegistrations ETrainingSessionRegistrations[]
-  events               Event[]
-  RevalidateProfile    RevalidateProfile?
+  id                      String                    @id @db.Uuid
+  name                    String
+  mobile                  String
+  email                   String
+  role                    UserRole                  @default(user)
+  isNew                   Boolean                   @default(true) @map("isnew")
+  isBlacklisted           Boolean                   @default(false) @map("is_blacklisted")
+  cartId                  String?
+  type                    ProfileType               @default(STUDENT)
+  typeData                Json?                     @default("{}") @map("type_data") @db.Json
+  bookings                Booking[]
+  cart                    Cart?
+  training                ETraining[]
+  ETrainingSessionBooking ETrainingSessionBooking[]
+  events                  Event[]
+  RevalidateProfile       RevalidateProfile?
 
   @@map("profile")
 }
@@ -44,12 +44,11 @@ model Equipment {
   eCategoriesId   String
   secondaryStatus ESecondaryStatus @default(ACTIVE) @map("secondary_status")
   specifications  String           @db.VarChar(2500)
+  onlyForPHDs     Boolean          @default(false)
   instances       EInstance[]
   category        ECategories      @relation(fields: [eCategoriesId], references: [id], onDelete: Cascade)
   manuals         Manual[]
   videos          Video[]
-  onlyForPHDs     Boolean          @default(false)
-  // trainingSession ETrainingSession[]
 }
 
 model Manual {
@@ -85,29 +84,20 @@ model EInstance {
 model ETraining {
   id        String           @id @unique @default(nanoid(7))
   userId    String           @map("user_id") @db.Uuid
-  user      Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionId String
-  session   ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   datetime  DateTime
+  session   ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user      Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ETrainingSession {
-  id            String                          @id @unique @default(nanoid(7))
-  name          String
-  categoryIds   String[]
-  categories    ECategories[]
-  day           Json                            @default("{}") @db.Json()
-  bookings      ETraining[]
-  registrations ETrainingSessionRegistrations[]
-}
-
-model ETrainingSessionRegistrations {
-  id        String           @id @unique @default(nanoid(7))
-  userId    String           @map("user_id") @db.Uuid
-  user      Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  DateTime  DateTime
-  sessionId String
-  session   ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id                      String                    @id @unique @default(nanoid(7))
+  categoryIds             String[]
+  name                    String
+  day                     Json                      @default("{}") @db.Json
+  bookings                ETraining[]
+  ETrainingSessionBooking ETrainingSessionBooking[]
+  categories              ECategories[]             @relation("ECategoriesToETrainingSession")
 }
 
 model Cart {
@@ -158,7 +148,7 @@ model ECategories {
   id              String             @id @unique @default(nanoid(7))
   name            String
   equipment       Equipment[]
-  trainingSession ETrainingSession[]
+  trainingSession ETrainingSession[] @relation("ECategoriesToETrainingSession")
 }
 
 model RepoElectronics {
@@ -213,6 +203,15 @@ model Tutorials {
   endTime     DateTime @map("end_time")
   date        DateTime
   mentors     String
+}
+
+model ETrainingSessionBooking {
+  id               String           @id @unique
+  user_id          String           @db.Uuid
+  DateTime         DateTime
+  sessionId        String
+  ETrainingSession ETrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  profile          Profile          @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 enum EStatus {
