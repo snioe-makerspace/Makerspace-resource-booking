@@ -2,9 +2,11 @@
 </script>
 
 <div>
-  <button class="RegisterButton CrispButton" data-type="dark-blue" {...$$restProps}>
-    Register
-  </button>
+  <a href="/equipment">
+    <button class="RegisterButton CrispButton" data-type="dark-blue" {...$$restProps}>
+      Register
+    </button>
+  </a>
 </div>
 
 <style lang="scss">

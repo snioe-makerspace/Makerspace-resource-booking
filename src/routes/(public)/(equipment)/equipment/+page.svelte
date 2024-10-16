@@ -24,6 +24,8 @@
 
   $: equipmentSearch = '';
   $: categoryFilter = '';
+
+  $: console.log(data.user?.type);
 </script>
 
 <main class="Equipment">
@@ -47,8 +49,10 @@
 
   <div class="Equipment__content">
     {#each data.allEquipment.filter((item) => {
+      // console.log(item);
       if (item.secondaryStatus === ESecondaryStatus.DISABLED) return false;
-      if (categoryFilter === '') return item;
+      if (data.user?.type === 'STUDENT' && item.onlyForPHDs) return false;
+      if (categoryFilter === '') return true;
       return item.eCategoriesId === categoryFilter;
     }) as item (item.id)}
       <div

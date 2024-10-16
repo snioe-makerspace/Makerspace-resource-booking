@@ -36,7 +36,10 @@
   $: videoPane = false;
   $: selectedInstance = null as EquipmentById['instances'][0] | null;
   $: seemore = false;
+
   $: availabilityPane = false;
+
+  $: console.log(availabilityPane);
 
   $: isUserBlacklisted = user?.app_metadata.custom_claims.is_blacklisted ?? false;
 </script>

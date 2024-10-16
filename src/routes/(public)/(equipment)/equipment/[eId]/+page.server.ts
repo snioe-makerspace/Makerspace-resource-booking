@@ -15,7 +15,7 @@ import { ESecondaryStatus } from '@prisma/client';
 import { registerAttendee } from '$db/Session.db';
 
 // @ts-ignore
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ params, locals, url }) => {
   const equipment = await getEquipmentById(params.eId);
   // console.log(params);
   let trainedUsers = undefined;
@@ -41,6 +41,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     trainedUsers: trainedUsers,
     trainingDay: trainingDay,
     registeredUser: registeredUser,
+    availabilityPane: url.searchParams.get('availability') === 'true',
     cartItemForm: await superValidate(zod(CartItemZSchema)),
     registerForm: await superValidate(zod(RegisterFormZSchema)),
     isDeleted:

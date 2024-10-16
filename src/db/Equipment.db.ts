@@ -18,6 +18,7 @@ export async function getAllEquipmentPreview(): Promise<
     image: string;
     secondaryStatus: ESecondaryStatus;
     eCategoriesId: string;
+    onlyForPHDs: boolean;
   }[]
 > {
   // @ts-ignore
