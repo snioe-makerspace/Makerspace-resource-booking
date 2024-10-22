@@ -70,7 +70,9 @@
   <header class="Equipment__header w-100 gap-10">
     <h1 class="w-100">{data.equipment.name}</h1>
     <p class="w-100">{data.equipment.model}</p>
-    <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
+    {#if data.equipment.onlyForPhds}
+      <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
+    {/if}
   </header>
   <section class="Equipment__hero">
     <div class="Equipment__imageBox">
