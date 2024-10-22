@@ -60,9 +60,7 @@
         class="Equipment__card"
         class:disabled={item.secondaryStatus === ESecondaryStatus.DELETED}
       >
-        {#if data.user?.type === 'STUDENT' && item.onlyForPHDs}
-          <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
-        {/if}
+        <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
         <img src={item.image} alt={item.name} />
         <h2 class="w-100">{item.name}</h2>
         <p class="w-100">{item.model}</p>
