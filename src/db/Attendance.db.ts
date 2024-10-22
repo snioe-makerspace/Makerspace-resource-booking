@@ -4,7 +4,7 @@ import type { EAttendeeSchema } from '$lib/schemas';
 export async function addAttendees(attendees: EAttendeeSchema[]) {
   await db.eTrainingSessionBooking.deleteMany({
     where: {
-      userId: {
+      user_id: {
         in: attendees.map((attendee) => attendee.user_id)
       },
       sessionId: {

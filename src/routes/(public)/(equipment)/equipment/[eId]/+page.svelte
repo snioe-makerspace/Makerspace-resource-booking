@@ -39,9 +39,14 @@
 
   $: availabilityPane = false;
 
-  $: console.log(availabilityPane);
+  // $: console.log(availabilityPane);
 
   $: isUserBlacklisted = user?.app_metadata.custom_claims.is_blacklisted ?? false;
+
+  const validateSnuEmail = (email: string): boolean => {
+    const pattern = /^[a-zA-Z0-9._%+-]+@snu\.edu\.in$/;
+    return pattern.test(email);
+  };
 </script>
 
 {#if selectedInstance && user && !isUserBlacklisted}
@@ -65,6 +70,9 @@
   <header class="Equipment__header w-100 gap-10">
     <h1 class="w-100">{data.equipment.name}</h1>
     <p class="w-100">{data.equipment.model}</p>
+    {#if data.user?.type === 'STUDENT' && equipment.onlyForPHDs}
+      <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
+    {/if}
   </header>
   <section class="Equipment__hero">
     <div class="Equipment__imageBox">
@@ -142,7 +150,7 @@
                 <td>{item.name}</td>
                 <td>{equipment.model}</td>
                 <td>{equipment?.category?.name}</td>
-                <td>{item.cost}</td>
+                <td>{validateSnuEmail(user?.email ?? '') ? 'Free' : item.cost}</td>
                 <td>{item.status}</td>
                 <td>
                   {#if user}

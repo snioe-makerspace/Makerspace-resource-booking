@@ -51,22 +51,26 @@
     {#each data.allEquipment.filter((item) => {
       // console.log(item);
       if (item.secondaryStatus === ESecondaryStatus.DISABLED) return false;
-      if (data.user?.type === 'STUDENT' && item.onlyForPHDs) return false;
+      // if (data.user?.type === 'STUDENT' && item.onlyForPHDs) return false;
       if (categoryFilter === '') return true;
       return item.eCategoriesId === categoryFilter;
     }) as item (item.id)}
-      <div
+      <a
+        href="/equipment/{item.id}"
         class="Equipment__card"
         class:disabled={item.secondaryStatus === ESecondaryStatus.DELETED}
       >
+        {#if data.user?.type === 'STUDENT' && item.onlyForPHDs}
+          <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
+        {/if}
         <img src={item.image} alt={item.name} />
         <h2 class="w-100">{item.name}</h2>
         <p class="w-100">{item.model}</p>
         <div class="Equipment__card--buttons">
-          <a href="/equipment/{item.id}" class="CrispButton">Learn more</a>
+          <a href="/equipment/{item.id}" class="CrispButton" data-type="black-outline">Book</a>
           <!-- <a href="/equipment/{item.id}" class="CrispButton" data-type="dark-blue">Book</a> -->
         </div>
-      </div>
+      </a>
     {/each}
   </div>
 </main>
@@ -103,6 +107,7 @@
       border-radius: 10px;
       @include make-flex($just: flex-start);
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
 
       &.disabled {
         border: 1px solid var(--darkYellowOrange);
@@ -147,6 +152,7 @@
       }
 
       & > a {
+        // text-decoration: none !important;
         margin-top: auto;
       }
     }
