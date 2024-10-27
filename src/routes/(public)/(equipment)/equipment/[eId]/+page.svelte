@@ -8,6 +8,7 @@
   import { SessionStore } from '$store/SupaStore';
   import ManualViewPane from './Panes/ManualViewPane.svelte';
   import VideoViewPane from './Panes/VideoViewPane.svelte';
+  import { validateSnuEmail } from '$utils/EmailId';
 
   export let data: PageData;
   $: ({ equipment } = data);
@@ -42,11 +43,6 @@
   // $: console.log(availabilityPane);
 
   $: isUserBlacklisted = user?.app_metadata.custom_claims.is_blacklisted ?? false;
-
-  const validateSnuEmail = (email: string): boolean => {
-    const pattern = /^[a-zA-Z0-9._%+-]+@snu\.edu\.in$/;
-    return pattern.test(email);
-  };
 </script>
 
 {#if selectedInstance && user && !isUserBlacklisted}
@@ -70,7 +66,7 @@
   <header class="Equipment__header w-100 gap-10">
     <h1 class="w-100">{data.equipment.name}</h1>
     <p class="w-100">{data.equipment.model}</p>
-    {#if data.equipment.onlyForPhds}
+    {#if data.equipment.onlyForPHDs}
       <i class="CrispMessage" data-type="info" data-format="box">Only for PHDs</i>
     {/if}
   </header>
@@ -156,7 +152,9 @@
                   {#if user}
                     <button
                       class="CrispButton"
-                      disabled={item.status !== EStatus.available || isUserBlacklisted}
+                      disabled={item.status !== EStatus.available ||
+                        isUserBlacklisted ||
+                        (data.user?.type === 'STUDENT' && data.equipment.onlyForPHDs)}
                       data-type="black-outline"
                       on:click={() => {
                         selectedInstance = item;

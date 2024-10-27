@@ -14,12 +14,6 @@
     (sessionUser) => sessionUser.sessionId === selectedSessionId
   );
 
-  $: options = {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  };
-
   const { form: attendeeForm, enhance: attendeeEnhance } = superForm(data.attendanceForm, {
     id: 'AttendeeForm',
     dataType: 'json',
@@ -169,6 +163,42 @@
               </td>
             </tr>
           {/each}
+          {#each data.allRegisteredSessionUsers as attendee}
+            <tr class:delete={operations.delete.map((i) => i.id).includes(attendee.user.id)}>
+              <td> {attendee.user.name} </td>
+              <td> {attendee.user.email} </td>
+              <td> {attendee.user.mobile} </td>
+              <!-- <td> {attendee.datetime.toLocaleDateString('en-GB')} </td> -->
+              <td></td>
+              <td>
+                <input
+                  type="checkbox"
+                  name="attendee"
+                  value={attendee.user.id}
+                  checked={operations.add.map((i) => i.user_id).includes(attendee.user.id)}
+                  on:click={(e) => {
+                    if (e.target.checked) {
+                      operations.add = [
+                        ...operations.add,
+                        {
+                          id: nanoid(),
+                          sessionId: selectedSessionId,
+                          name: attendee.user.name,
+                          user_id: attendee.user.id,
+                          datetime: new Date()
+                        }
+                      ];
+                    } else {
+                      operations.add = operations.add.filter((i) => i.user_id !== attendee.user.id);
+                    }
+                  }}
+                />
+                <!-- <button class="CrispButton" type="button">
+                  {operations.delete.map((i) => i.id).includes(attendee.id) ? 'Cancel' : 'Delete'}
+                </button> -->
+              </td>
+            </tr>
+          {/each}
         {:else}
           <tr class="empty">
             <td colspan="5">
@@ -243,8 +273,6 @@
         </tr>
       </tfoot>
     </table>
-
-    <div></div>
   </form>
 </main>
 

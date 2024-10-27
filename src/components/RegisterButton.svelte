@@ -4,7 +4,7 @@
 <div>
   <a href="/equipment">
     <button class="RegisterButton CrispButton" data-type="dark-blue" {...$$restProps}>
-      Register
+      Book Now
     </button>
   </a>
 </div>
