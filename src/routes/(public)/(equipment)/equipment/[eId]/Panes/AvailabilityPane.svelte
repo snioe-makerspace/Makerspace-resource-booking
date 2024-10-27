@@ -159,6 +159,21 @@
         Note: You can only book for a maximum of {maxOffset} month(s) from today.
       </i>
       <hr />
+      <i class="CrispMessage" data-type="info">
+        Please download the list of trusted suppliers for materials. You can get your own materials
+        or purchase them from the lab.
+      </i>
+      <a
+        href="/assets/files/materials.pdf"
+        download="Materials"
+        target="_blank"
+        data-type="file"
+        class="FancyLink"
+      >
+        <p data-icon={String.fromCharCode(58989)}>Trusted Suppliers for Materials</p>
+        <span>(Click here to download)</span>
+      </a>
+      <hr />
       <form use:enhance method="POST" id="cartItemForm" action="/equipment/[eId]?/add">
         <label class="CrispLabel" for="dateSelector">
           <span data-mandatory style="color: inherit;"> Date </span>

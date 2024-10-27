@@ -6,12 +6,13 @@
   import type { CartItem, EInstance } from '@prisma/client';
   import { dateProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 
-  export let { modal, formStore, instances } = $$props as {
+  export let { modal, formStore, instances, maxSteps } = $$props as {
     modal: boolean;
     instances: (CartItem & {
       instance: EInstance;
     })[];
     formStore: SuperValidated<BookingSchema>;
+    maxSteps: number;
   };
 
   const { form, errors, enhance, constraints } = superForm(formStore, {
@@ -61,6 +62,8 @@
     instances.length > 0
       ? new Date(Math.max(...instances.map((i) => new Date(i.end).getTime())))
       : new Date();
+
+  $: step = 0;
 </script>
 
 <Pane
@@ -77,6 +80,7 @@
       adminNotes: '',
       paymentId: ''
     };
+    step = 0;
   }}
 >
   <p slot="header">Book Equipment</p>
@@ -88,168 +92,205 @@
       use:enhance
       class="Col--center gap-15"
     >
-      <label for="mentor" class="CrispLabel">
-        <span style="color: inherit;" data-mandatory> Mentor </span>
-        <input
-          id="mentor"
-          type="text"
-          name="mentor"
-          class="CrispInput"
-          bind:value={$form.mentor}
-          {...$constraints.mentor}
-          aria-invalid={$errors.mentor ? 'true' : undefined}
-        />
-        {#if $errors.mentor}
-          <p class="CrispMessage w-100" data-type="error">{$errors.mentor}</p>
-        {/if}
-      </label>
-      <label for="description" class="CrispLabel">
-        <span style="color: inherit;" data-mandatory> Description </span>
-        <textarea
-          id="description"
-          name="description"
-          class="CrispInput"
-          data-type="text-area"
-          placeholder="Tell us about your project...(Course, Research, etc)"
-          bind:value={$form.description}
-          aria-invalid={$errors.description ? 'true' : undefined}
-          {...$constraints.description}
-        />
-        {#if $errors.description}
-          <p class="CrispMessage w-100" data-type="error">{$errors.description}</p>
-        {/if}
-      </label>
+      {#if step === 0}
+        <label for="mentor" class="CrispLabel">
+          <span style="color: inherit;" data-mandatory> Mentor </span>
+          <input
+            id="mentor"
+            type="text"
+            name="mentor"
+            class="CrispInput"
+            bind:value={$form.mentor}
+            {...$constraints.mentor}
+            aria-invalid={$errors.mentor ? 'true' : undefined}
+          />
+          {#if $errors.mentor}
+            <p class="CrispMessage w-100" data-type="error">{$errors.mentor}</p>
+          {/if}
+        </label>
+        <label for="description" class="CrispLabel">
+          <span style="color: inherit;" data-mandatory> Description </span>
+          <i class="CrispMessage" data-type="info" data-format="box">
+            Add your design file link.
+          </i>
+          <textarea
+            id="description"
+            name="description"
+            class="CrispInput"
+            data-type="text-area"
+            placeholder="Tell us about your project...(Course, Research, etc)"
+            bind:value={$form.description}
+            aria-invalid={$errors.description ? 'true' : undefined}
+            {...$constraints.description}
+          />
+          {#if $errors.description}
+            <p class="CrispMessage w-100" data-type="error">{$errors.description}</p>
+          {/if}
+        </label>
 
-      <label for="deadline" class="CrispLabel">
-        <span style="color: inherit;" data-mandatory> Deadline </span>
-        <input
-          id="deadline"
-          type="date"
-          name="deadline"
-          min={maxInstanceEndTime.toISOString().split('T')[0]}
-          class="CrispInput"
-          bind:value={$proxyDate}
-          {...$constraints.deadline}
-          aria-invalid={$errors.deadline ? 'true' : undefined}
-        />
-        {#if $errors.deadline}
-          <p class="CrispMessage w-100" data-type="error">{$errors.deadline}</p>
+        <label for="deadline" class="CrispLabel">
+          <span style="color: inherit;" data-mandatory> Deadline </span>
+          <input
+            id="deadline"
+            type="date"
+            name="deadline"
+            min={maxInstanceEndTime.toISOString().split('T')[0]}
+            class="CrispInput"
+            bind:value={$proxyDate}
+            {...$constraints.deadline}
+            aria-invalid={$errors.deadline ? 'true' : undefined}
+          />
+          {#if $errors.deadline}
+            <p class="CrispMessage w-100" data-type="error">{$errors.deadline}</p>
+          {/if}
+        </label>
+      {:else}
+        <label for="cost" class="CrispLabel">
+          <span style="color: inherit;"> Cost </span>
+          <input
+            disabled
+            readonly
+            id="cost"
+            type="text"
+            name="cost"
+            class="CrispInput"
+            value={new Intl.NumberFormat('en-IN', {
+              style: 'currency',
+              currency: 'INR'
+            }).format(bookingCost(instances))}
+          />
+        </label>
+        {#if bookingCost(instances) > 0}
+          <img
+            src="/assets/images/payment-qr-code.png"
+            alt="Payment QR Code"
+            style="width: 10rem"
+          />
         {/if}
-      </label>
 
-      <label for="cost" class="CrispLabel">
-        <span style="color: inherit;"> Cost </span>
-        <input
-          disabled
-          readonly
-          id="cost"
-          type="text"
-          name="cost"
-          class="CrispInput"
-          value={new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR'
-          }).format(bookingCost(instances))}
-        />
-      </label>
-      {#if bookingCost(instances) > 0}
-        <img src="/assets/images/payment-qr-code.png" alt="Payment QR Code" style="width: 10rem" />
-      {/if}
+        <label for="paymentId" class="CrispLabel">
+          <span style="color: inherit;" data-mandatory> Payment ID </span>
+          <input
+            id="paymentId"
+            type="text"
+            name="paymentId"
+            class="CrispInput"
+            bind:value={$form.paymentId}
+            {...$constraints.paymentId}
+            aria-invalid={$errors.paymentId ? 'true' : undefined}
+          />
+          {#if $errors.paymentId}
+            <p class="CrispMessage w-100" data-type="error">{$errors.paymentId}</p>
+          {/if}
+        </label>
 
-      <label for="paymentId" class="CrispLabel">
-        <span style="color: inherit;" data-mandatory> Payment ID </span>
-        <input
-          id="paymentId"
-          type="text"
-          name="paymentId"
-          class="CrispInput"
-          bind:value={$form.paymentId}
-          {...$constraints.paymentId}
-          aria-invalid={$errors.paymentId ? 'true' : undefined}
-        />
-        {#if $errors.paymentId}
-          <p class="CrispMessage w-100" data-type="error">{$errors.paymentId}</p>
-        {/if}
-      </label>
-
-      <label for="instance" class="CrispLabel" style="overflow-x: auto; padding-bottom: 10px">
-        <span style="color: inherit;"> Instances </span>
-        <table class="FancyTable">
-          <thead>
-            <tr>
-              <th> Name </th>
-              <th> Slot Date </th>
-              <th> Timing </th>
-              <th> Billing Type </th>
-              <th> Cost </th>
-            </tr>
-          </thead>
-          <tbody>
-            {#if instances.length >= 0}
-              {#each instances as item}
+        <label for="instance" class="CrispLabel" style="overflow-x: auto; padding-bottom: 10px">
+          <span style="color: inherit;"> Instances </span>
+          <table class="FancyTable">
+            <thead>
+              <tr>
+                <th> Name </th>
+                <th> Slot Date </th>
+                <th> Timing </th>
+                <th> Billing Type </th>
+                <th> Cost </th>
+              </tr>
+            </thead>
+            <tbody>
+              {#if instances.length >= 0}
+                {#each instances as item}
+                  <tr>
+                    <td> {item.instance.name} </td>
+                    <td>
+                      {new Date(item.start).toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </td>
+                    <td>
+                      {new Date(item.start).toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                      })}
+                      {' '}-{' '}
+                      {new Date(item.end).toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                      })}
+                    </td>
+                    <td> {item.instance.billingType} </td>
+                    <td>
+                      {new Intl.NumberFormat('en-IN', {
+                        style: 'currency',
+                        currency: 'INR'
+                      }).format(item.instance.cost)}
+                    </td>
+                  </tr>
+                {/each}
+              {:else}
                 <tr>
-                  <td> {item.instance.name} </td>
-                  <td>
-                    {new Date(item.start).toLocaleString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </td>
-                  <td>
-                    {new Date(item.start).toLocaleString('en-US', {
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      hour12: true
-                    })}
-                    {' '}-{' '}
-                    {new Date(item.end).toLocaleString('en-US', {
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      hour12: true
-                    })}
-                  </td>
-                  <td> {item.instance.billingType} </td>
-                  <td>
-                    {new Intl.NumberFormat('en-IN', {
-                      style: 'currency',
-                      currency: 'INR'
-                    }).format(item.instance.cost)}
+                  <td colspan="5">
+                    <i class="CrispMessage" data-type="info" data-format="box"> No items found </i>
                   </td>
                 </tr>
-              {/each}
-            {:else}
+              {/if}
+            </tbody>
+            <tfoot>
               <tr>
                 <td colspan="5">
-                  <i class="CrispMessage" data-type="info" data-format="box"> No items found </i>
+                  Showing {instances.length} result(s)
                 </td>
               </tr>
-            {/if}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5">
-                Showing {instances.length} result(s)
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </label>
+            </tfoot>
+          </table>
+        </label>
+      {/if}
     </form>
   </svelte:fragment>
   <svelte:fragment slot="footer">
-    <button
-      class="CrispButton"
-      type="submit"
-      form="bookingForm"
-      data-type="black-outline"
-      disabled={$form.mentor === '' ||
-        $form.description === '' ||
-        $form.deadline === undefined ||
-        $form.instances.length === 0 ||
-        ($form.paymentId === undefined && bookingCost(instances) > 0)}
-    >
-      Book
-    </button>
+    {#if maxSteps > 1 && step < maxSteps - 1}
+      <div style="display: flex; gap: 10px;">
+        <button
+          class="CrispButton"
+          type="button"
+          data-type="black-outline"
+          disabled={step === 0}
+          on:click={() => (step -= 1)}
+        >
+          Back
+        </button>
+        <button
+          class="CrispButton"
+          type="button"
+          data-type="black-outline"
+          on:click={() => (step += 1)}
+          disabled={step === maxSteps - 1 ||
+            $form.mentor === '' ||
+            $form.description === '' ||
+            $form.deadline === undefined}
+        >
+          Next
+        </button>
+      </div>
+    {:else}
+      <button
+        class="CrispButton"
+        type="submit"
+        form="bookingForm"
+        data-type="black-outline"
+        disabled={maxSteps === 1
+          ? $form.mentor === '' || $form.description === '' || $form.deadline === undefined
+          : $form.mentor === '' ||
+            $form.description === '' ||
+            $form.deadline === undefined ||
+            $form.instances.length === 0 ||
+            ($form.paymentId === undefined && bookingCost(instances) > 0)}
+      >
+        Book
+      </button>
+    {/if}
   </svelte:fragment>
 </Pane>

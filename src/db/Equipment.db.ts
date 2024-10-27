@@ -363,6 +363,14 @@ export async function getSessionUsers() {
   });
 }
 
+export async function getRegisteredSessionUsers() {
+  return await db.eTrainingSessionBooking.findMany({
+    select: {
+      user: true
+    }
+  });
+}
+
 export async function upsertECategories(categories: ECategoriesSchema[]) {
   return await db.$transaction(
     categories.map((category) =>

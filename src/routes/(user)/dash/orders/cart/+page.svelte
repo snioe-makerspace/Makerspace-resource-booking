@@ -4,6 +4,7 @@
   import type { PageData } from './$types';
   import { superForm } from 'sveltekit-superforms';
   import { addToast } from '$store/ToastStore';
+  import { validateSnuEmail } from '$utils/EmailId';
 
   export let data: PageData;
 
@@ -36,12 +37,18 @@
       }
     }
   });
+
+  $: console.log(data.session?.user.email);
+
+  $: isSNUDomain = validateSnuEmail(data.session?.user.email || '');
+  $: maxSteps = isSNUDomain ? 1 : 2;
 </script>
 
 <BookingPane
   bind:modal={bookingModal}
   bind:formStore={data.bookingForm}
   bind:instances={selectedInstances}
+  bind:maxSteps
 />
 
 <table class="FancyTable">
@@ -127,7 +134,7 @@
               hour12: false
             })}
           </td>
-          <td>{item.instance.cost}</td>
+          <td>{isSNUDomain ? '0' : item.instance.cost}</td>
           <td> </td>
         </tr>
       {/each}
