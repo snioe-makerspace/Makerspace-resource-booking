@@ -144,7 +144,7 @@
                       hour12: true
                     })}
                   </td>
-                  <td> {item.instance.cost} </td>
+                  <td> {item.cost} </td>
                 </tr>
               {/each}
             {:else}
@@ -177,7 +177,7 @@
           value={new Intl.NumberFormat('en-IN', {
             style: 'currency',
             currency: 'INR'
-          }).format(0)}
+          }).format(booking.cost)}
         />
       </label>
 

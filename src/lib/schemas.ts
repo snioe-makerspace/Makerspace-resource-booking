@@ -226,6 +226,7 @@ export const CartItemZSchema = z.object({
   start: z.string(), // will be string of date object
   instanceId: z.string(),
   equipmentId: z.string(),
+  cost: z.number().min(0.0),
   id: z.string().optional().or(z.literal('')),
   userId: z.string().optional().or(z.literal(''))
 });

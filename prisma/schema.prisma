@@ -112,6 +112,7 @@ model CartItem {
   instanceId String
   start      DateTime
   end        DateTime
+  cost       Float     @default(0)
   cartId     String
   createdAt  DateTime  @default(now()) @map("created_at")
   cart       Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
@@ -140,6 +141,7 @@ model BookingItem {
   start      DateTime
   end        DateTime
   bookingId  String
+  cost       Float     @default(0)
   booking    Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   instance   EInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
 }

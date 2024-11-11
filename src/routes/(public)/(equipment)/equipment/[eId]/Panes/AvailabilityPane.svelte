@@ -39,6 +39,9 @@
   $: maxOffset = currentInstance?.availability.maxOffset || 1;
   $: disableWeekDays = inverseWeekDaysEnum(currentInstance?.availability.repeat || []);
   $: blackout = getWeekdayDates(disableWeekDays, maxOffset);
+  $: ownMaterials = false;
+
+  $: console.log(ownMaterials ? 0 : (currentInstance?.cost ?? 0));
 
   const { form, errors, enhance } = superForm(formStore, {
     id: 'cartItemForm',
@@ -50,7 +53,8 @@
         start: `${slots[$form.start].slot}`,
         equipmentId,
         instanceId,
-        userId
+        userId,
+        cost: ownMaterials ? 0 : currentInstance?.cost
       };
     },
     onResult(event) {
@@ -66,7 +70,8 @@
         start: '',
         equipmentId: '',
         instanceId: '',
-        userId: ''
+        userId: '',
+        cost: 0
       };
       dateSelector = null;
     },
@@ -175,6 +180,20 @@
       </a>
       <hr />
       <form use:enhance method="POST" id="cartItemForm" action="/equipment/[eId]?/add">
+        <label
+          class="CrispLabel"
+          for="ownMaterials"
+          style="flex-direction: row; align-items: center; justify-content: space-between; width: 100%;"
+        >
+          <span style="color: inherit;"> Would you bring your own materials? </span>
+          <input
+            id="onlyForPHDs"
+            type="checkbox"
+            name="onlyForPHDs"
+            class="CrispCheckbox"
+            bind:checked={ownMaterials}
+          />
+        </label>
         <label class="CrispLabel" for="dateSelector">
           <span data-mandatory style="color: inherit;"> Date </span>
           <input
