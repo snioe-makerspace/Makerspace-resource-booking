@@ -263,6 +263,7 @@ export async function upsertEquipment(equipment: Equipment) {
       image: equipment.image,
       description: equipment.description,
       eCategoriesId: equipment.eCategoriesId,
+      specifications: equipment.specifications,
       onlyForPHDs: equipment.onlyForPHDs
     },
     create: {
