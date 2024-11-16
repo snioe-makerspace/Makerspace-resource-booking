@@ -268,6 +268,8 @@ export const BookingCancelZSchema = z.object({
 
 export const BookingUpdateZSchema = z.object({
   bookingId: z.string().min(2),
+  userEmail: z.string().email(),
+  userName: z.string().min(2),
   status: z.nativeEnum(BookingStatus),
   adminNotes: z.string().optional().or(z.literal('')),
   paymentStatus: z.nativeEnum(PaymentStatus).optional(),

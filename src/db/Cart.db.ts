@@ -91,6 +91,12 @@ export async function getUserBookings(userId: string) {
         include: {
           instance: true
         }
+      },
+      user: {
+        select: {
+          email: true,
+          name: true
+        }
       }
     }
   });
