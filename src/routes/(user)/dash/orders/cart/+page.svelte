@@ -38,10 +38,17 @@
     }
   });
 
-  $: console.log(data.session?.user.email);
+  // $: console.log(data.session?.user.email);
 
-  $: isSNUDomain = validateSnuEmail(data.session?.user.email || '');
-  $: maxSteps = isSNUDomain ? 1 : 2;
+  // $: isSNUDomain = validateSnuEmail(data.session?.user.email || '');
+  $: totalCost = selectedItemIDs.reduce((acc, curr) => {
+    const item = selectedInstances.find((i) => i.id === curr);
+    return item ? acc + item.cost : acc;
+  }, 0);
+
+  $: console.log(totalCost);
+
+  $: maxSteps = totalCost > 0 ? 2 : 1;
 </script>
 
 <BookingPane
@@ -49,6 +56,7 @@
   bind:formStore={data.bookingForm}
   bind:instances={selectedInstances}
   bind:maxSteps
+  bind:totalCost
 />
 
 <table class="FancyTable">
@@ -134,7 +142,7 @@
               hour12: false
             })}
           </td>
-          <td>{isSNUDomain ? '0' : item.instance.cost}</td>
+          <td>{item.cost}</td>
           <td> </td>
         </tr>
       {/each}

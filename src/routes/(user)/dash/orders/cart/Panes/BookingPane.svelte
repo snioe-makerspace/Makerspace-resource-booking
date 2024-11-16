@@ -6,14 +6,17 @@
   import type { CartItem, EInstance } from '@prisma/client';
   import { dateProxy, superForm, type SuperValidated } from 'sveltekit-superforms';
 
-  export let { modal, formStore, instances, maxSteps } = $$props as {
+  export let { modal, formStore, instances, maxSteps, totalCost } = $$props as {
     modal: boolean;
     instances: (CartItem & {
       instance: EInstance;
     })[];
     formStore: SuperValidated<BookingSchema>;
     maxSteps: number;
+    totalCost: number;
   };
+
+  $: console.log(totalCost);
 
   const { form, errors, enhance, constraints } = superForm(formStore, {
     id: 'bookingForm',
@@ -24,7 +27,7 @@
         ...$form,
         cartId: instances[0].cartId,
         deadline: new Date($form.deadline),
-        cost: bookingCost(instances)
+        cost: totalCost
       });
     },
     onResult(event) {
@@ -154,10 +157,7 @@
             type="text"
             name="cost"
             class="CrispInput"
-            value={new Intl.NumberFormat('en-IN', {
-              style: 'currency',
-              currency: 'INR'
-            }).format(bookingCost(instances))}
+            value={totalCost}
           />
         </label>
         {#if bookingCost(instances) > 0}
@@ -226,7 +226,7 @@
                       {new Intl.NumberFormat('en-IN', {
                         style: 'currency',
                         currency: 'INR'
-                      }).format(item.instance.cost)}
+                      }).format(item.cost)}
                     </td>
                   </tr>
                 {/each}

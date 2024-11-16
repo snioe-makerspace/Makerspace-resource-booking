@@ -9,6 +9,8 @@
     dataType: 'json',
     taintedMessage: null
   });
+
+  // $: console.log(data);
 </script>
 
 <form method="POST" class="Cart" action="/dash?/booking" id="bookingForm" use:enhance>
@@ -127,7 +129,7 @@
             <td>{item.instance.name}</td>
             <td>{new Date(item.start).toLocaleString()}</td>
             <td>{new Date(item.end).toLocaleString()}</td>
-            <td>{item.instance.cost}</td>
+            <td>{item}</td>
             <td>
               <a
                 class="CrispButton"

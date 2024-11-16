@@ -226,6 +226,7 @@ export const CartItemZSchema = z.object({
   start: z.string(), // will be string of date object
   instanceId: z.string(),
   equipmentId: z.string(),
+  cost: z.number().min(0.0),
   id: z.string().optional().or(z.literal('')),
   userId: z.string().optional().or(z.literal(''))
 });
@@ -267,6 +268,8 @@ export const BookingCancelZSchema = z.object({
 
 export const BookingUpdateZSchema = z.object({
   bookingId: z.string().min(2),
+  userEmail: z.string().email(),
+  userName: z.string().min(2),
   status: z.nativeEnum(BookingStatus),
   adminNotes: z.string().optional().or(z.literal('')),
   paymentStatus: z.nativeEnum(PaymentStatus).optional(),

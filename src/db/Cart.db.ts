@@ -32,6 +32,7 @@ export async function addToCart(cardItem: CartItemSchema & { userId: string }) {
       items: {
         create: [
           {
+            cost: cardItem.cost,
             instanceId: cardItem.instanceId,
             start: new Date(cardItem.start),
             end: new Date(cardItem.end)
@@ -44,6 +45,7 @@ export async function addToCart(cardItem: CartItemSchema & { userId: string }) {
       items: {
         create: [
           {
+            cost: cardItem.cost,
             instanceId: cardItem.instanceId,
             start: new Date(cardItem.start),
             end: new Date(cardItem.end)
@@ -88,6 +90,12 @@ export async function getUserBookings(userId: string) {
       items: {
         include: {
           instance: true
+        }
+      },
+      user: {
+        select: {
+          email: true,
+          name: true
         }
       }
     }
@@ -134,7 +142,8 @@ export async function makeBooking(data: BookingSchema): Promise<
       id: true,
       end: true,
       instanceId: true,
-      start: true
+      start: true,
+      cost: true
     }
   });
 
@@ -151,7 +160,8 @@ export async function makeBooking(data: BookingSchema): Promise<
             create: cartItems.map((item) => ({
               end: item.end,
               start: item.start,
-              instanceId: item.instanceId
+              instanceId: item.instanceId,
+              cost: item.cost
             }))
           },
           paymentId: data.paymentId

@@ -6,6 +6,7 @@
   import { BookingStatus } from '@prisma/client';
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
   import { PaymentStatus } from '@prisma/client';
+
   export let { modal, formStore, booking } = $$props as {
     modal: boolean;
     formStore: SuperValidated<BookingUpdateSchema>;
@@ -22,7 +23,9 @@
     onSubmit() {
       form.set({
         ...$form,
-        bookingId: booking.id
+        bookingId: booking.id,
+        userEmail: booking.user.email,
+        userName: booking.user.name
       });
     },
     onResult(event) {
@@ -38,7 +41,9 @@
     status: booking.status,
     adminNotes: booking.adminNotes!,
     paymentStatus: booking.paymentStatus,
-    paymentId: booking.paymentId ?? ''
+    paymentId: booking.paymentId ?? '',
+    userName: booking.user.name,
+    userEmail: booking.user.email
   });
 </script>
 
@@ -144,7 +149,7 @@
                       hour12: true
                     })}
                   </td>
-                  <td> {item.instance.cost} </td>
+                  <td> {item.cost} </td>
                 </tr>
               {/each}
             {:else}
@@ -177,7 +182,7 @@
           value={new Intl.NumberFormat('en-IN', {
             style: 'currency',
             currency: 'INR'
-          }).format(0)}
+          }).format(booking.cost)}
         />
       </label>
 

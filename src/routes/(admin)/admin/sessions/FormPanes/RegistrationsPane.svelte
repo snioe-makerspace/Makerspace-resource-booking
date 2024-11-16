@@ -9,7 +9,7 @@
 
   $: registeredUsers = registeredUsers.filter((user) => user.sessionId === sessionID);
 
-  $: console.log(sessionID);
+  // $: console.log(sessionID);
 </script>
 
 <Pane bind:open={modal} style="--paneWidth: 450px;" on:close={() => (modal = false)}>
