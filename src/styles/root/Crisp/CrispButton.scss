@@ -1,13 +1,13 @@
 .CrispButton {
   --crp-button-gap: 10px;
   --crp-button-width: auto;
-  --crp-button-height: 30px;
+  --crp-button-height: 40px;
   --crp-button-font-size: 15px;
-  --crp-button-padding-top: 8px;
+  --crp-button-padding-top: 12px;
   --crp-button-border-radius: 6px;
-  --crp-button-padding-left: 10px;
-  --crp-button-padding-right: 10px;
-  --crp-button-padding-bottom: 8px;
+  --crp-button-padding-left: 24px;
+  --crp-button-padding-right: 24px;
+  --crp-button-padding-bottom: 12px;
 
   --crp-button-disabled-color: #b8b8b8;
   --crp-button-disabled-background-color: #e8e8e8;
@@ -25,6 +25,14 @@
 
     --crp-button-box-shadow: #00000000 0px 0px 0px 0px, #00000000 0px 0px 0px 0px,
       #0000000d 0px 1px 2px 0px;
+  }
+
+  &[data-type='red'] {
+    --crp-button-color: #ffffff;
+    --crp-button-color-hover: #ffffff;
+
+    --crp-button-background-color: #bc2f3e;
+    --crp-button-background-color-hover: #9e2834;
   }
 
   &[data-type='ghost'] {
@@ -65,6 +73,23 @@
 
     --crp-button-border: 1px solid #ffffff;
     --crp-button-border-hover: 1px solid #000000;
+
+    --crp-button-box-shadow: transparent;
+
+    --crp-button-disabled-background-color: #757575;
+    --crp-button-disabled-border: 1px solid #757575;
+    --crp-button-disabled-color: #b8b8b8;
+  }
+
+  &[data-type='white-outline'] {
+    --crp-button-color: #ffffff;
+    --crp-button-color-hover: #000000;
+
+    --crp-button-background-color: transparent;
+    --crp-button-background-color-hover: #ffffff;
+
+    --crp-button-border: 1px solid #ffffff;
+    --crp-button-border-hover: 1px solid #ffffff;
 
     --crp-button-box-shadow: transparent;
 
@@ -128,6 +153,7 @@
   transition: all 0.15s ease-in-out;
   font-size: var(--crp-button-font-size);
   border-radius: var(--crp-button-border-radius);
+  text-decoration: none;
 
   // Padding
   padding-top: var(--crp-button-padding-top);

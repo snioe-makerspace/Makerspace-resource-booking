@@ -14,7 +14,7 @@
 
 <style lang="scss">
   .EquipmentLayout {
-    @include box($height: auto);
+    @include box($height: 100%);
     @include make-flex($just: flex-start);
     padding: 30px 20px 20px 20px;
     margin-top: 64px;

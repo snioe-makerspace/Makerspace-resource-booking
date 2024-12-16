@@ -5,6 +5,8 @@
   export let { pathname } = $$props as {
     pathname: string;
   };
+
+  $: console.log(pathname);
 </script>
 
 <header class="HeaderWrapper">
@@ -16,6 +18,26 @@
         <img src="/assets/images/logo.svg" alt="Logo" />
       </a>
     </div>
+    <ul class="Header__links">
+      <li class={`${pathname === '' && 'Header__links--active'}`}>
+        <a href="/">Home</a>
+      </li>
+      <li class={`${pathname === 'modules' && 'Header__links--active'}`}>
+        <a href="/learning-modules">Modules</a>
+      </li>
+      <li class={`${pathname === 'events' && 'Header__links--active'}`}>
+        <a href="/events">Events</a>
+      </li>
+      <li class={`${pathname === 'contact' && 'Header__links--active'}`}>
+        <a href="/contact">Contact</a>
+      </li>
+      <li class={`${pathname === 'archive' && 'Header__links--active'}`}>
+        <a href="/archive">Archive</a>
+      </li>
+      <li class={`${pathname === 'equipment' && 'Header__links--active'}`}>
+        <a href="/equipment">Equipments</a>
+      </li>
+    </ul>
     <div class="Header__right">
       <HomeNavigation {pathname} isHeader={true} />
       <Google />
@@ -50,7 +72,7 @@
       gap: 10px;
       @include box(auto);
       & > img {
-        @include box(auto, 35px);
+        @include box(auto, 25px);
 
         &:first-child {
           @include respondAt(500px) {
@@ -70,7 +92,34 @@
 
     &__left {
       @include make-flex($dir: row, $just: flex-start);
-      @include box(auto, auto);
+      @include box(100%, auto);
+    }
+
+    &__links {
+      @include make-flex($dir: row, $just: center);
+      gap: 15px;
+      @include box(100%, auto);
+      & > li {
+        @include box(auto, auto);
+        list-style: none;
+
+        & > a {
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: var(--textColor);
+          text-decoration: none;
+          transition: color 0.3s;
+          &:hover {
+            color: #003f75;
+          }
+        }
+      }
+
+      &--active {
+        & > a {
+          color: #003f75 !important;
+        }
+      }
     }
 
     &__right {
