@@ -1,4 +1,5 @@
 <script>
+  import Footer from '$components/Footer.svelte';
   import Header from '$components/Header.svelte';
   import RegisterButton from '$components/RegisterButton.svelte';
   export let data;
@@ -7,5 +8,6 @@
 </script>
 
 <Header pathname={data.pathname} />
-<RegisterButton />
+<!-- <RegisterButton /> -->
 <slot />
+<Footer />

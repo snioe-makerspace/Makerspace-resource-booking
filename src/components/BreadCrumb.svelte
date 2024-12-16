@@ -18,7 +18,7 @@
 
 <style lang="scss">
   .BreadCrumb {
-    @include box();
+    @include box($height: auto);
     flex-wrap: wrap;
     column-gap: 5px;
     padding: 5px 15px;
